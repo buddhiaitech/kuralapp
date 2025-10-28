@@ -14,6 +14,9 @@ import { GlobalAnalytics } from "@/pages/l1/GlobalAnalytics";
 import { SurveyAssignments } from "@/pages/l1/SurveyAssignments";
 import { ModeratorManagement } from "@/pages/l1/ModeratorManagement";
 import { LiveSurveyMonitor } from "@/pages/l1/LiveSurveyMonitor";
+import { ACVoterManager } from "@/pages/l1/ACVoterManager";
+import { ACFamilyManager } from "@/pages/l1/ACFamilyManager";
+import { ACSurveyManager } from "@/pages/l1/ACSurveyManager";
 import { BoothManagement } from "@/pages/shared/BoothManagement";
 import { BoothAgentManagement } from "@/pages/shared/BoothAgentManagement";
 import { L0Dashboard } from "@/pages/l0/Dashboard";
@@ -87,6 +90,9 @@ const AppRoutes = () => {
       {/* L1 Routes */}
       <Route path="/l1/constituencies" element={<ProtectedRoute allowedRoles={['L1']}><ConstituencySelector /></ProtectedRoute>} />
       <Route path="/l1/ac/:acNumber" element={<ProtectedRoute allowedRoles={['L1']}><ACDetailedDashboard /></ProtectedRoute>} />
+      <Route path="/l1/ac/:acNumber/voters" element={<ProtectedRoute allowedRoles={['L1']}><ACVoterManager /></ProtectedRoute>} />
+      <Route path="/l1/ac/:acNumber/families" element={<ProtectedRoute allowedRoles={['L1']}><ACFamilyManager /></ProtectedRoute>} />
+      <Route path="/l1/ac/:acNumber/surveys" element={<ProtectedRoute allowedRoles={['L1']}><ACSurveyManager /></ProtectedRoute>} />
       <Route path="/l1/analytics" element={<ProtectedRoute allowedRoles={['L1']}><GlobalAnalytics /></ProtectedRoute>} />
       <Route path="/l1/ac-analytics" element={<ProtectedRoute allowedRoles={['L1']}><ACAnalyticsDashboard /></ProtectedRoute>} />
       <Route path="/l1/ac-comparison" element={<ProtectedRoute allowedRoles={['L1']}><ACComparison /></ProtectedRoute>} />
