@@ -101,10 +101,12 @@ const AppRoutes = () => {
       <Route path="/l1/surveys" element={<ProtectedRoute allowedRoles={['L1']}><SurveyForms /></ProtectedRoute>} />
       <Route path="/l1/surveys/builder/:formId" element={<ProtectedRoute allowedRoles={['L1']}><FormBuilder /></ProtectedRoute>} />
       <Route path="/l1/survey-assignments" element={<ProtectedRoute allowedRoles={['L1']}><SurveyAssignments /></ProtectedRoute>} />
-      <Route path="/l1/moderators" element={<ProtectedRoute allowedRoles={['L1']}><ModeratorManagement /></ProtectedRoute>} />
-      <Route path="/l1/booths" element={<ProtectedRoute allowedRoles={['L1']}><BoothManagement /></ProtectedRoute>} />
-      <Route path="/l1/booth-agents" element={<ProtectedRoute allowedRoles={['L1']}><BoothAgentManagement /></ProtectedRoute>} />
-      <Route path="/l1/live-surveys" element={<ProtectedRoute allowedRoles={['L1']}><LiveSurveyMonitor /></ProtectedRoute>} />
+              <Route path="/l1/moderators" element={<ProtectedRoute allowedRoles={['L1']}><ModeratorManagement /></ProtectedRoute>} />
+              <Route path="/l1/booths" element={<ProtectedRoute allowedRoles={['L1']}><BoothManagement /></ProtectedRoute>} />
+              <Route path="/l1/booth-agents" element={<ProtectedRoute allowedRoles={['L1']}><BoothAgentManagement /></ProtectedRoute>} />
+              <Route path="/l1/live-surveys" element={<ProtectedRoute allowedRoles={['L1']}><LiveSurveyMonitor /></ProtectedRoute>} />
+              <Route path="/l1/advanced-analytics" element={<ProtectedRoute allowedRoles={['L1']}><L1AdvancedAnalytics /></ProtectedRoute>} />
+              <Route path="/l1/activity-logs" element={<ProtectedRoute allowedRoles={['L1']}><L1ActivityLogs /></ProtectedRoute>} />
       
       {/* L2 Routes */}
       <Route path="/l2/dashboard" element={<ProtectedRoute allowedRoles={['L2']}><L2Dashboard /></ProtectedRoute>} />

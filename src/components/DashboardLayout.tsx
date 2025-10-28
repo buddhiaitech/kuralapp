@@ -1,6 +1,9 @@
 import { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { NotificationProvider } from '@/contexts/NotificationContext';
+import { ActivityLogProvider } from '@/contexts/ActivityLogContext';
+import { NotificationCenter } from './NotificationCenter';
 import {
   LayoutDashboard,
   Users,
@@ -14,6 +17,8 @@ import {
   FileText,
   Grid3x3,
   GitCompare,
+  TrendingUp,
+  ScrollText,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -47,6 +52,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           { icon: FileText, label: 'Survey Forms', path: '/l0/surveys' },
           { icon: Home, label: 'Booth Management', path: '/l0/booths' },
           { icon: UserCircle, label: 'Booth Agent Management', path: '/l0/booth-agents' },
+          { icon: ScrollText, label: 'Activity Logs', path: '/l0/activity-logs' },
           { icon: Settings, label: 'App Settings', path: '/l0/settings' },
         ];
       case 'L1':
@@ -55,12 +61,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           { icon: BarChart3, label: 'Analytics Dashboard', path: '/l1/analytics' },
           { icon: Grid3x3, label: 'AC Analytics Dashboard', path: '/l1/ac-analytics' },
           { icon: GitCompare, label: 'AC Comparison', path: '/l1/ac-comparison' },
+          { icon: TrendingUp, label: 'Advanced Analytics', path: '/l1/advanced-analytics' },
           { icon: FileText, label: 'Survey Forms', path: '/l1/surveys' },
           { icon: FileText, label: 'Survey Form Assignments', path: '/l1/survey-assignments' },
           { icon: UserCog, label: 'Moderator Management', path: '/l1/moderators' },
           { icon: Home, label: 'Booth Management', path: '/l1/booths' },
           { icon: Users, label: 'Booth Agent Management', path: '/l1/booth-agents' },
           { icon: Activity, label: 'Live Survey Monitor', path: '/l1/live-surveys' },
+          { icon: ScrollText, label: 'Activity Logs', path: '/l1/activity-logs' },
         ];
       case 'L2':
         return [
@@ -72,6 +80,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           { icon: Home, label: 'Booth Management', path: '/l2/booths' },
           { icon: UserCircle, label: 'Booth Agent Management', path: '/l2/booth-agents' },
           { icon: Activity, label: 'Live Booth Updates', path: '/l2/live-updates' },
+          { icon: ScrollText, label: 'Activity Logs', path: '/l2/activity-logs' },
         ];
       default:
         return [];
@@ -80,14 +89,21 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
   const menuItems = getMenuItems();
 
+  if (!user) return null;
+
   return (
-    <div className="flex min-h-screen w-full bg-background">
-      {/* Sidebar */}
-      <aside className="w-64 bg-card border-r border-border flex flex-col">
-        <div className="p-6">
-          <h1 className="text-2xl font-bold text-primary">AC Dashboard</h1>
-          <p className="text-sm text-muted-foreground mt-1">Management System</p>
-        </div>
+    <NotificationProvider userId={user.id} userRole={user.role}>
+      <ActivityLogProvider>
+        <div className="flex min-h-screen w-full bg-background">
+          {/* Sidebar */}
+          <aside className="w-64 bg-card border-r border-border flex flex-col">
+            <div className="p-6 flex items-center justify-between">
+              <div>
+                <h1 className="text-2xl font-bold text-primary">AC Dashboard</h1>
+                <p className="text-sm text-muted-foreground mt-1">Management System</p>
+              </div>
+              <NotificationCenter />
+            </div>
         
         <Separator />
         
@@ -122,12 +138,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 overflow-auto">
-        <div className="p-8">
-          {children}
+          {/* Main Content */}
+          <main className="flex-1 overflow-auto">
+            <div className="p-8">
+              {children}
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      </ActivityLogProvider>
+    </NotificationProvider>
   );
 };
