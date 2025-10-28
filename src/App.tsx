@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import Index from "@/pages/Index";
 import { Login } from "@/pages/Login";
 import { ConstituencySelector } from "@/pages/l1/ConstituencySelector";
 import { ACDetailedDashboard } from "@/pages/l1/ACDetailedDashboard";
@@ -67,8 +68,9 @@ const RoleBasedRedirect = () => {
 const AppRoutes = () => {
   return (
     <Routes>
+      <Route path="/" element={<Index />} />
       <Route path="/login" element={<Login />} />
-      <Route path="/" element={<RoleBasedRedirect />} />
+      <Route path="/dashboard" element={<RoleBasedRedirect />} />
       
       {/* L0 Routes */}
       <Route path="/l0/dashboard" element={<ProtectedRoute allowedRoles={['L0']}><L0Dashboard /></ProtectedRoute>} />

@@ -24,7 +24,7 @@ export const Login = () => {
       if (success) {
         toast.success('Login successful!');
         // Navigation will be handled by the router based on role
-        navigate('/');
+        navigate('/dashboard');
       } else {
         toast.error('Invalid credentials. Please try again.');
       }
