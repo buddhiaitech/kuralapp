@@ -1,5 +1,5 @@
 import { ReactNode } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ActivityLogProvider } from '@/contexts/ActivityLogContext';
@@ -19,9 +19,22 @@ import {
   GitCompare,
   TrendingUp,
   ScrollText,
+  Menu,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from './ui/sidebar';
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -33,9 +46,11 @@ const roleLabels = {
   L2: 'ACI Dashboard',
 };
 
-export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const AppSidebar = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const { state } = useSidebar();
 
   const handleLogout = () => {
     logout();
@@ -88,63 +103,90 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   };
 
   const menuItems = getMenuItems();
+  const isCollapsed = state === 'collapsed';
+
+  if (!user) return null;
+
+  return (
+    <Sidebar collapsible="icon">
+      <SidebarHeader className="border-b">
+        <div className="flex items-center justify-between p-4">
+          {!isCollapsed && (
+            <div className="flex-1">
+              <h1 className="text-xl font-bold text-primary">AC Dashboard</h1>
+              <p className="text-xs text-muted-foreground mt-1">Management System</p>
+            </div>
+          )}
+        </div>
+      </SidebarHeader>
+
+      <SidebarContent>
+        <SidebarMenu className="px-2 py-4">
+          {menuItems.map((item) => {
+            const isActive = location.pathname === item.path;
+            return (
+              <SidebarMenuItem key={item.path}>
+                <SidebarMenuButton
+                  onClick={() => navigate(item.path)}
+                  isActive={isActive}
+                  tooltip={item.label}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.label}</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarContent>
+
+      <SidebarFooter className="border-t">
+        <div className="p-4 space-y-3">
+          {!isCollapsed && (
+            <div className="p-3 bg-accent rounded-lg">
+              <p className="text-sm font-medium truncate">{user?.name}</p>
+              <p className="text-xs text-muted-foreground">{roleLabels[user?.role || 'L0']}</p>
+              {user?.assignedAC && (
+                <p className="text-xs text-muted-foreground mt-1">AC {user.assignedAC}</p>
+              )}
+            </div>
+          )}
+          <SidebarMenuButton onClick={handleLogout} tooltip="Logout">
+            <LogOut className="h-4 w-4" />
+            <span>Logout</span>
+          </SidebarMenuButton>
+        </div>
+      </SidebarFooter>
+    </Sidebar>
+  );
+};
+
+export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  const { user } = useAuth();
 
   if (!user) return null;
 
   return (
     <NotificationProvider userId={user.id} userRole={user.role}>
       <ActivityLogProvider>
-        <div className="flex min-h-screen w-full bg-background">
-          {/* Sidebar */}
-          <aside className="w-64 bg-card border-r border-border flex flex-col">
-            <div className="p-6 flex items-center justify-between">
-              <div>
-                <h1 className="text-2xl font-bold text-primary">AC Dashboard</h1>
-                <p className="text-sm text-muted-foreground mt-1">Management System</p>
+        <SidebarProvider defaultOpen={true}>
+          <div className="flex min-h-screen w-full bg-background">
+            <AppSidebar />
+            <main className="flex-1 flex flex-col overflow-hidden">
+              {/* Header with hamburger and notifications */}
+              <header className="h-14 border-b bg-card flex items-center justify-between px-4 sticky top-0 z-10">
+                <SidebarTrigger className="hover:bg-accent">
+                  <Menu className="h-5 w-5" />
+                </SidebarTrigger>
+                <NotificationCenter />
+              </header>
+              {/* Main content area */}
+              <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">
+                {children}
               </div>
-              <NotificationCenter />
-            </div>
-        
-        <Separator />
-        
-        <nav className="flex-1 p-4 space-y-2">
-          {menuItems.map((item) => (
-            <Button
-              key={item.path}
-              variant="ghost"
-              className="w-full justify-start"
-              onClick={() => navigate(item.path)}
-            >
-              <item.icon className="mr-3 h-5 w-5" />
-              {item.label}
-            </Button>
-          ))}
-        </nav>
-
-        <Separator />
-
-        <div className="p-4">
-          <div className="mb-4 p-3 bg-accent rounded-lg">
-            <p className="text-sm font-medium">{user?.name}</p>
-            <p className="text-xs text-muted-foreground">{roleLabels[user?.role || 'L0']}</p>
-            {user?.assignedAC && (
-              <p className="text-xs text-muted-foreground mt-1">AC {user.assignedAC}</p>
-            )}
+            </main>
           </div>
-          <Button variant="outline" className="w-full" onClick={handleLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Logout
-          </Button>
-        </div>
-      </aside>
-
-          {/* Main Content */}
-          <main className="flex-1 overflow-auto">
-            <div className="p-8">
-              {children}
-            </div>
-          </main>
-        </div>
+        </SidebarProvider>
       </ActivityLogProvider>
     </NotificationProvider>
   );
