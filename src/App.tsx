@@ -18,6 +18,7 @@ import { AppSettings } from "@/pages/l0/AppSettings";
 import { VoterData } from "@/pages/l0/VoterData";
 import { SurveyBank } from "@/pages/l0/SurveyBank";
 import { FormBuilder } from "@/pages/l0/FormBuilder";
+import { SurveyForms } from "@/pages/l1/SurveyForms";
 import { L2Dashboard } from "@/pages/l2/Dashboard";
 import { VoterManager } from "@/pages/l2/VoterManager";
 import { FamilyManager } from "@/pages/l2/FamilyManager";
@@ -80,6 +81,8 @@ const AppRoutes = () => {
       <Route path="/l1/constituencies" element={<ProtectedRoute allowedRoles={['L1']}><ConstituencySelector /></ProtectedRoute>} />
       <Route path="/l1/ac/:acNumber" element={<ProtectedRoute allowedRoles={['L1']}><ACDetailedDashboard /></ProtectedRoute>} />
       <Route path="/l1/analytics" element={<ProtectedRoute allowedRoles={['L1']}><GlobalAnalytics /></ProtectedRoute>} />
+      <Route path="/l1/surveys" element={<ProtectedRoute allowedRoles={['L1']}><SurveyForms /></ProtectedRoute>} />
+      <Route path="/l1/surveys/builder/:formId" element={<ProtectedRoute allowedRoles={['L1']}><FormBuilder /></ProtectedRoute>} />
       <Route path="/l1/survey-assignments" element={<ProtectedRoute allowedRoles={['L1']}><SurveyAssignments /></ProtectedRoute>} />
       <Route path="/l1/moderators" element={<ProtectedRoute allowedRoles={['L1']}><ModeratorManagement /></ProtectedRoute>} />
       <Route path="/l1/agents" element={<ProtectedRoute allowedRoles={['L1']}><L1AgentManagement /></ProtectedRoute>} />

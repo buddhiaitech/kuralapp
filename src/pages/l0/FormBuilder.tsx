@@ -6,9 +6,35 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, GripVertical, Save } from 'lucide-react';
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+
+const constituencies = [
+  { number: 118, name: 'Thondamuthur' },
+  { number: 119, name: 'Coimbatore North' },
+  { number: 120, name: 'Coimbatore South' },
+  { number: 121, name: 'Singanallur' },
+  { number: 122, name: 'Sulur' },
+  { number: 123, name: 'Kavundampalayam' },
+  { number: 124, name: 'Kaundampalayam' },
+  { number: 125, name: 'Pollachi' },
+  { number: 126, name: 'Valparai' },
+  { number: 127, name: 'Udumalaipettai' },
+  { number: 128, name: 'Madathukulam' },
+  { number: 129, name: 'Palladam' },
+  { number: 130, name: 'Dharapuram' },
+  { number: 131, name: 'Kangayam' },
+  { number: 132, name: 'Perundurai' },
+  { number: 133, name: 'Bhavani' },
+  { number: 134, name: 'Anthiyur' },
+  { number: 135, name: 'Gobichettipalayam' },
+  { number: 136, name: 'Erode East' },
+  { number: 137, name: 'Erode West' },
+  { number: 138, name: 'Modakurichi' },
+];
 
 type QuestionType = 'short-text' | 'paragraph' | 'yes-no' | 'multiple-choice' | 'checkboxes' | 'dropdown' | 'date' | 'number';
 
@@ -24,16 +50,21 @@ interface FormData {
   title: string;
   description: string;
   questions: Question[];
+  assignedACs: number[];
 }
 
 export const FormBuilder = () => {
   const { formId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const isNewForm = formId === 'new';
+  const isL0 = user?.role === 'L0';
+  const isL1 = user?.role === 'L1';
 
   const [formData, setFormData] = useState<FormData>({
     title: isNewForm ? '' : 'Voter Intake Form 2025',
     description: isNewForm ? '' : 'Collect voter information and preferences',
+    assignedACs: isNewForm ? [] : [118, 119],
     questions: isNewForm ? [] : [
       {
         id: '1',
@@ -109,9 +140,19 @@ export const FormBuilder = () => {
     return ['multiple-choice', 'checkboxes', 'dropdown'].includes(type);
   };
 
+  const toggleAC = (acNumber: number) => {
+    setFormData(prev => ({
+      ...prev,
+      assignedACs: prev.assignedACs.includes(acNumber)
+        ? prev.assignedACs.filter(n => n !== acNumber)
+        : [...prev.assignedACs, acNumber]
+    }));
+  };
+
   const handleSave = () => {
     console.log('Saving form:', formData);
-    navigate('/l0/surveys');
+    const redirectPath = isL0 ? '/l0/surveys' : '/l1/surveys';
+    navigate(redirectPath);
   };
 
   return (
@@ -125,7 +166,7 @@ export const FormBuilder = () => {
             <p className="text-muted-foreground">Build your survey form</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate('/l0/surveys')}>
+            <Button variant="outline" onClick={() => navigate(isL0 ? '/l0/surveys' : '/l1/surveys')}>
               Cancel
             </Button>
             <Button onClick={handleSave}>
@@ -157,6 +198,36 @@ export const FormBuilder = () => {
               rows={3}
             />
           </div>
+        </Card>
+
+        {/* AC Assignment */}
+        <Card className="p-6 space-y-4">
+          <div className="space-y-2">
+            <Label>Assign to Assembly Constituencies</Label>
+            <p className="text-sm text-muted-foreground">
+              Select which constituencies will have access to this form
+            </p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-96 overflow-y-auto p-4 border rounded-md">
+            {constituencies.map((ac) => (
+              <div key={ac.number} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`ac-${ac.number}`}
+                  checked={formData.assignedACs.includes(ac.number)}
+                  onCheckedChange={() => toggleAC(ac.number)}
+                />
+                <label
+                  htmlFor={`ac-${ac.number}`}
+                  className="text-sm font-medium leading-none cursor-pointer"
+                >
+                  {ac.number} - {ac.name}
+                </label>
+              </div>
+            ))}
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {formData.assignedACs.length} constituency(ies) selected
+          </p>
         </Card>
 
         {/* Questions */}

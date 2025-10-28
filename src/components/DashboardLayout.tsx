@@ -42,13 +42,14 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           { icon: LayoutDashboard, label: 'System Dashboard', path: '/l0/dashboard' },
           { icon: UserCog, label: 'Admin Management', path: '/l0/admins' },
           { icon: Users, label: 'Voter Data', path: '/l0/voters' },
-          { icon: FileText, label: 'Survey Question Bank', path: '/l0/surveys' },
+          { icon: FileText, label: 'Survey Forms', path: '/l0/surveys' },
           { icon: Settings, label: 'App Settings', path: '/l0/settings' },
         ];
       case 'L1':
         return [
           { icon: Home, label: 'Constituencies', path: '/l1/constituencies' },
           { icon: BarChart3, label: 'Analytics Dashboard', path: '/l1/analytics' },
+          { icon: FileText, label: 'Survey Forms', path: '/l1/surveys' },
           { icon: FileText, label: 'Survey Form Assignments', path: '/l1/survey-assignments' },
           { icon: UserCog, label: 'Moderator Management', path: '/l1/moderators' },
           { icon: Users, label: 'Booth Agent Management', path: '/l1/agents' },
