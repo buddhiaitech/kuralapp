@@ -18,6 +18,10 @@ import { ACVoterManager } from "@/pages/l1/ACVoterManager";
 import { ACFamilyManager } from "@/pages/l1/ACFamilyManager";
 import { ACSurveyManager } from "@/pages/l1/ACSurveyManager";
 import { ACReports } from "@/pages/l1/ACReports";
+import L1AdvancedAnalytics from "@/pages/l1/AdvancedAnalytics";
+import L0ActivityLogs from "@/pages/l0/ActivityLogs";
+import L1ActivityLogs from "@/pages/l1/ActivityLogs";
+import L2ActivityLogs from "@/pages/l2/ActivityLogs";
 import { BoothManagement } from "@/pages/shared/BoothManagement";
 import { BoothAgentManagement } from "@/pages/shared/BoothAgentManagement";
 import { L0Dashboard } from "@/pages/l0/Dashboard";
@@ -87,6 +91,7 @@ const AppRoutes = () => {
       <Route path="/l0/surveys/builder/:formId" element={<ProtectedRoute allowedRoles={['L0']}><FormBuilder /></ProtectedRoute>} />
       <Route path="/l0/booths" element={<ProtectedRoute allowedRoles={['L0']}><BoothManagement /></ProtectedRoute>} />
       <Route path="/l0/booth-agents" element={<ProtectedRoute allowedRoles={['L0']}><BoothAgentManagement /></ProtectedRoute>} />
+      <Route path="/l0/activity-logs" element={<ProtectedRoute allowedRoles={['L0']}><L0ActivityLogs /></ProtectedRoute>} />
       
       {/* L1 Routes */}
       <Route path="/l1/constituencies" element={<ProtectedRoute allowedRoles={['L1']}><ConstituencySelector /></ProtectedRoute>} />
@@ -119,6 +124,7 @@ const AppRoutes = () => {
       <Route path="/l2/booth-agents" element={<ProtectedRoute allowedRoles={['L2']}><BoothAgentManagement /></ProtectedRoute>} />
       <Route path="/l2/live-updates" element={<ProtectedRoute allowedRoles={['L2']}><LiveBoothUpdates /></ProtectedRoute>} />
       <Route path="/l2/reports" element={<ProtectedRoute allowedRoles={['L2']}><Reports /></ProtectedRoute>} />
+      <Route path="/l2/activity-logs" element={<ProtectedRoute allowedRoles={['L2']}><L2ActivityLogs /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
