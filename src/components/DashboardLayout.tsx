@@ -12,6 +12,8 @@ import {
   UserCircle,
   Activity,
   FileText,
+  Grid3x3,
+  GitCompare,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -51,6 +53,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         return [
           { icon: Home, label: 'Constituencies', path: '/l1/constituencies' },
           { icon: BarChart3, label: 'Analytics Dashboard', path: '/l1/analytics' },
+          { icon: Grid3x3, label: 'AC Analytics Dashboard', path: '/l1/ac-analytics' },
+          { icon: GitCompare, label: 'AC Comparison', path: '/l1/ac-comparison' },
           { icon: FileText, label: 'Survey Forms', path: '/l1/surveys' },
           { icon: FileText, label: 'Survey Form Assignments', path: '/l1/survey-assignments' },
           { icon: UserCog, label: 'Moderator Management', path: '/l1/moderators' },

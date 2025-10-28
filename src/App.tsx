@@ -8,6 +8,8 @@ import Index from "@/pages/Index";
 import { Login } from "@/pages/Login";
 import { ConstituencySelector } from "@/pages/l1/ConstituencySelector";
 import { ACDetailedDashboard } from "@/pages/l1/ACDetailedDashboard";
+import { ACAnalyticsDashboard } from "@/pages/l1/ACAnalyticsDashboard";
+import { ACComparison } from "@/pages/l1/ACComparison";
 import { GlobalAnalytics } from "@/pages/l1/GlobalAnalytics";
 import { SurveyAssignments } from "@/pages/l1/SurveyAssignments";
 import { ModeratorManagement } from "@/pages/l1/ModeratorManagement";
@@ -86,6 +88,8 @@ const AppRoutes = () => {
       <Route path="/l1/constituencies" element={<ProtectedRoute allowedRoles={['L1']}><ConstituencySelector /></ProtectedRoute>} />
       <Route path="/l1/ac/:acNumber" element={<ProtectedRoute allowedRoles={['L1']}><ACDetailedDashboard /></ProtectedRoute>} />
       <Route path="/l1/analytics" element={<ProtectedRoute allowedRoles={['L1']}><GlobalAnalytics /></ProtectedRoute>} />
+      <Route path="/l1/ac-analytics" element={<ProtectedRoute allowedRoles={['L1']}><ACAnalyticsDashboard /></ProtectedRoute>} />
+      <Route path="/l1/ac-comparison" element={<ProtectedRoute allowedRoles={['L1']}><ACComparison /></ProtectedRoute>} />
       <Route path="/l1/surveys" element={<ProtectedRoute allowedRoles={['L1']}><SurveyForms /></ProtectedRoute>} />
       <Route path="/l1/surveys/builder/:formId" element={<ProtectedRoute allowedRoles={['L1']}><FormBuilder /></ProtectedRoute>} />
       <Route path="/l1/survey-assignments" element={<ProtectedRoute allowedRoles={['L1']}><SurveyAssignments /></ProtectedRoute>} />
