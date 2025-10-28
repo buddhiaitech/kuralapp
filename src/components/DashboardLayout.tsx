@@ -22,8 +22,8 @@ interface DashboardLayoutProps {
 
 const roleLabels = {
   L0: 'Super Admin',
-  L1: 'Admin (ACIM)',
-  L2: 'Moderator (ACI)',
+  L1: 'ACIM Dashboard',
+  L2: 'ACI Dashboard',
 };
 
 export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
@@ -43,6 +43,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           { icon: UserCog, label: 'Admin Management', path: '/l0/admins' },
           { icon: Users, label: 'Voter Data', path: '/l0/voters' },
           { icon: FileText, label: 'Survey Forms', path: '/l0/surveys' },
+          { icon: Home, label: 'Booth Management', path: '/l0/booths' },
+          { icon: UserCircle, label: 'Booth Agent Management', path: '/l0/booth-agents' },
           { icon: Settings, label: 'App Settings', path: '/l0/settings' },
         ];
       case 'L1':
@@ -52,7 +54,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           { icon: FileText, label: 'Survey Forms', path: '/l1/surveys' },
           { icon: FileText, label: 'Survey Form Assignments', path: '/l1/survey-assignments' },
           { icon: UserCog, label: 'Moderator Management', path: '/l1/moderators' },
-          { icon: Users, label: 'Booth Agent Management', path: '/l1/agents' },
+          { icon: Home, label: 'Booth Management', path: '/l1/booths' },
+          { icon: Users, label: 'Booth Agent Management', path: '/l1/booth-agents' },
           { icon: Activity, label: 'Live Survey Monitor', path: '/l1/live-surveys' },
         ];
       case 'L2':
@@ -60,8 +63,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           { icon: LayoutDashboard, label: 'My Dashboard', path: '/l2/dashboard' },
           { icon: Users, label: 'Voter Manager', path: '/l2/voters' },
           { icon: Home, label: 'Family Manager', path: '/l2/families' },
+          { icon: FileText, label: 'Survey Forms', path: '/l2/survey-forms' },
           { icon: FileText, label: 'Survey Manager', path: '/l2/surveys' },
-          { icon: UserCircle, label: 'Booth Agent Management', path: '/l2/agents' },
+          { icon: Home, label: 'Booth Management', path: '/l2/booths' },
+          { icon: UserCircle, label: 'Booth Agent Management', path: '/l2/booth-agents' },
           { icon: Activity, label: 'Live Booth Updates', path: '/l2/live-updates' },
         ];
       default:
