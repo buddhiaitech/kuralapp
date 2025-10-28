@@ -49,6 +49,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
         return [
           { icon: Home, label: 'Constituencies', path: '/l1/constituencies' },
           { icon: BarChart3, label: 'Analytics Dashboard', path: '/l1/analytics' },
+          { icon: FileText, label: 'Survey Form Assignments', path: '/l1/survey-assignments' },
           { icon: UserCog, label: 'Moderator Management', path: '/l1/moderators' },
           { icon: Users, label: 'Booth Agent Management', path: '/l1/agents' },
           { icon: Activity, label: 'Live Survey Monitor', path: '/l1/live-surveys' },

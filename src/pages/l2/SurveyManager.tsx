@@ -16,6 +16,12 @@ export const SurveyManager = () => {
   const { user } = useAuth();
   const acNumber = user?.assignedAC || 118;
 
+  // Mock assigned forms (these would come from L1 assignments)
+  const assignedForms = [
+    { id: 1, name: 'Voter Intake Form 2025' },
+    { id: 2, name: 'Local Issues Survey' },
+  ];
+
   return (
     <DashboardLayout>
       <div className="space-y-8">
@@ -25,7 +31,19 @@ export const SurveyManager = () => {
         </div>
 
         <Card className="p-4">
-          <div className="flex space-x-4">
+          <div className="flex flex-wrap gap-4">
+            <Select>
+              <SelectTrigger className="w-[250px]">
+                <SelectValue placeholder="Select Survey Form to View" />
+              </SelectTrigger>
+              <SelectContent>
+                {assignedForms.map((form) => (
+                  <SelectItem key={form.id} value={form.id.toString()}>
+                    {form.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <Select>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by Booth" />
@@ -35,17 +53,6 @@ export const SurveyManager = () => {
                 <SelectItem value="1">Booth 1</SelectItem>
                 <SelectItem value="2">Booth 2</SelectItem>
                 <SelectItem value="3">Booth 3</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select>
-              <SelectTrigger className="w-[200px]">
-                <SelectValue placeholder="Filter by Question" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Questions</SelectItem>
-                <SelectItem value="q1">Which party will you vote for?</SelectItem>
-                <SelectItem value="q2">What is your primary concern?</SelectItem>
-                <SelectItem value="q3">Rate government performance</SelectItem>
               </SelectContent>
             </Select>
             <Button variant="outline">

@@ -8,6 +8,7 @@ import { Login } from "@/pages/Login";
 import { ConstituencySelector } from "@/pages/l1/ConstituencySelector";
 import { ACDetailedDashboard } from "@/pages/l1/ACDetailedDashboard";
 import { GlobalAnalytics } from "@/pages/l1/GlobalAnalytics";
+import { SurveyAssignments } from "@/pages/l1/SurveyAssignments";
 import { ModeratorManagement } from "@/pages/l1/ModeratorManagement";
 import { AgentManagement as L1AgentManagement } from "@/pages/l1/AgentManagement";
 import { LiveSurveyMonitor } from "@/pages/l1/LiveSurveyMonitor";
@@ -77,6 +78,7 @@ const AppRoutes = () => {
       <Route path="/l1/constituencies" element={<ProtectedRoute allowedRoles={['L1']}><ConstituencySelector /></ProtectedRoute>} />
       <Route path="/l1/ac/:acNumber" element={<ProtectedRoute allowedRoles={['L1']}><ACDetailedDashboard /></ProtectedRoute>} />
       <Route path="/l1/analytics" element={<ProtectedRoute allowedRoles={['L1']}><GlobalAnalytics /></ProtectedRoute>} />
+      <Route path="/l1/survey-assignments" element={<ProtectedRoute allowedRoles={['L1']}><SurveyAssignments /></ProtectedRoute>} />
       <Route path="/l1/moderators" element={<ProtectedRoute allowedRoles={['L1']}><ModeratorManagement /></ProtectedRoute>} />
       <Route path="/l1/agents" element={<ProtectedRoute allowedRoles={['L1']}><L1AgentManagement /></ProtectedRoute>} />
       <Route path="/l1/live-surveys" element={<ProtectedRoute allowedRoles={['L1']}><LiveSurveyMonitor /></ProtectedRoute>} />
