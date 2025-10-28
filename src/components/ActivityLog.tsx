@@ -141,57 +141,59 @@ export const ActivityLog = () => {
         </div>
       </Card>
 
-      <Card>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Timestamp</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Action</TableHead>
-              <TableHead>Entity</TableHead>
-              <TableHead>Details</TableHead>
-              {user?.role === 'L0' && <TableHead>IP Address</TableHead>}
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedActivities.length === 0 ? (
+      <Card className="overflow-hidden">
+        <div className="overflow-x-auto">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={user?.role === 'L0' ? 6 : 5} className="text-center py-8 text-muted-foreground">
-                  No activities found
-                </TableCell>
+                <TableHead className="whitespace-nowrap">Timestamp</TableHead>
+                <TableHead className="whitespace-nowrap">User</TableHead>
+                <TableHead className="whitespace-nowrap">Action</TableHead>
+                <TableHead className="whitespace-nowrap">Entity</TableHead>
+                <TableHead className="whitespace-nowrap min-w-[200px]">Details</TableHead>
+                {user?.role === 'L0' && <TableHead className="whitespace-nowrap">IP Address</TableHead>}
               </TableRow>
-            ) : (
-              paginatedActivities.map((activity) => (
-                <TableRow key={activity.id}>
-                  <TableCell className="text-sm">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-3 w-3 text-muted-foreground" />
-                      {format(activity.timestamp, 'MMM dd, HH:mm')}
-                    </div>
+            </TableHeader>
+            <TableBody>
+              {paginatedActivities.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={user?.role === 'L0' ? 6 : 5} className="text-center py-8 text-muted-foreground">
+                    No activities found
                   </TableCell>
-                  <TableCell>
-                    <div>
-                      <p className="text-sm font-medium">{activity.userName}</p>
-                      <p className="text-xs text-muted-foreground">{activity.userRole}</p>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={actionColors[activity.action]}>
-                      {activity.action}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm">{activity.entityType}</TableCell>
-                  <TableCell className="text-sm max-w-md truncate">{activity.details}</TableCell>
-                  {user?.role === 'L0' && (
-                    <TableCell className="text-xs text-muted-foreground">
-                      {activity.ipAddress || 'N/A'}
-                    </TableCell>
-                  )}
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
+              ) : (
+                paginatedActivities.map((activity) => (
+                  <TableRow key={activity.id}>
+                    <TableCell className="text-sm whitespace-nowrap">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="h-3 w-3 text-muted-foreground" />
+                        {format(activity.timestamp, 'MMM dd, HH:mm')}
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <div>
+                        <p className="text-sm font-medium">{activity.userName}</p>
+                        <p className="text-xs text-muted-foreground">{activity.userRole}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-nowrap">
+                      <Badge className={actionColors[activity.action]}>
+                        {activity.action}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm whitespace-nowrap">{activity.entityType}</TableCell>
+                    <TableCell className="text-sm max-w-md truncate">{activity.details}</TableCell>
+                    {user?.role === 'L0' && (
+                      <TableCell className="text-xs text-muted-foreground whitespace-nowrap">
+                        {activity.ipAddress || 'N/A'}
+                      </TableCell>
+                    )}
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </Card>
 
       {totalPages > 1 && (

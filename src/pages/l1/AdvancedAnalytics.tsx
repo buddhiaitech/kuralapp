@@ -18,13 +18,15 @@ export default function AdvancedAnalytics() {
         </div>
 
         <Tabs defaultValue="predictive" className="space-y-6">
-          <TabsList>
-            <TabsTrigger value="predictive">Predictive</TabsTrigger>
-            <TabsTrigger value="comparative">Comparative</TabsTrigger>
-            <TabsTrigger value="heatmap">Heatmap</TabsTrigger>
-            <TabsTrigger value="metrics">Metrics</TabsTrigger>
-            <TabsTrigger value="trends">Trends</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto">
+            <TabsList className="inline-flex w-auto min-w-full sm:min-w-0">
+              <TabsTrigger value="predictive" className="whitespace-nowrap">Predictive</TabsTrigger>
+              <TabsTrigger value="comparative" className="whitespace-nowrap">Comparative</TabsTrigger>
+              <TabsTrigger value="heatmap" className="whitespace-nowrap">Heatmap</TabsTrigger>
+              <TabsTrigger value="metrics" className="whitespace-nowrap">Metrics</TabsTrigger>
+              <TabsTrigger value="trends" className="whitespace-nowrap">Trends</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="predictive">
             <PredictiveInsights />

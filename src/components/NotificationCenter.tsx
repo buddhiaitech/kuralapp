@@ -72,18 +72,18 @@ export const NotificationCenter = () => {
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md">
         <SheetHeader>
-          <SheetTitle className="flex items-center justify-between">
-            Notifications
+          <SheetTitle className="flex items-center justify-between flex-wrap gap-2">
+            <span>Notifications</span>
             {notifications.length > 0 && (
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={markAllAsRead}
                   className="h-8 text-xs"
                 >
-                  <Check className="h-3 w-3 mr-1" />
-                  Mark all read
+                  <Check className="h-3 w-3 sm:mr-1" />
+                  <span className="hidden sm:inline">Mark all read</span>
                 </Button>
                 <Button
                   variant="ghost"
@@ -91,14 +91,14 @@ export const NotificationCenter = () => {
                   onClick={clearNotifications}
                   className="h-8 text-xs"
                 >
-                  <X className="h-3 w-3 mr-1" />
-                  Clear
+                  <X className="h-3 w-3 sm:mr-1" />
+                  <span className="hidden sm:inline">Clear</span>
                 </Button>
               </div>
             )}
           </SheetTitle>
-          <SheetDescription className="flex items-center gap-2">
-            <Filter className="h-3 w-3" />
+          <SheetDescription className="flex items-center gap-2 flex-wrap">
+            <Filter className="h-3 w-3 flex-shrink-0" />
             <Button
               variant={filter === 'all' ? 'default' : 'ghost'}
               size="sm"

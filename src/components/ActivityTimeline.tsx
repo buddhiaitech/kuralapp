@@ -56,11 +56,11 @@ export const ActivityTimeline = ({ limit = 10 }: { limit?: number }) => {
                     <div className="absolute left-0 top-1 h-4 w-4 rounded-full bg-primary flex items-center justify-center">
                       <div className="h-2 w-2 rounded-full bg-background" />
                     </div>
-                    <div className="bg-accent/50 rounded-lg p-3">
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1">
-                          <p className="text-sm font-medium">{activity.details}</p>
-                          <div className="flex items-center gap-2 mt-1">
+                     <div className="bg-accent/50 rounded-lg p-3">
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium break-words">{activity.details}</p>
+                          <div className="flex items-center gap-2 mt-1 flex-wrap">
                             <p className="text-xs text-muted-foreground">{activity.userName}</p>
                             <span className="text-xs text-muted-foreground">•</span>
                             <Badge variant="outline" className="text-xs">
@@ -71,7 +71,7 @@ export const ActivityTimeline = ({ limit = 10 }: { limit?: number }) => {
                             </Badge>
                           </div>
                         </div>
-                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground whitespace-nowrap">
                           <Clock className="h-3 w-3" />
                           {format(activity.timestamp, 'HH:mm')}
                         </div>
