@@ -5,8 +5,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Search, Filter, Eye } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useState, useMemo } from 'react';
 
-const mockVoters = [
+interface Voter {
+  id: number;
+  name: string;
+  voterId: string;
+  familyId: string;
+  booth: string;
+  status: 'Surveyed' | 'Pending' | 'Not Contacted';
+  phone: string;
+}
+
+const initialVoters: Voter[] = [
   { id: 1, name: 'Rajesh Kumar', voterId: 'TND1234567', familyId: 'FAM001', booth: 'Booth 1', status: 'Surveyed', phone: '+91 98765 43210' },
   { id: 2, name: 'Priya Sharma', voterId: 'TND1234568', familyId: 'FAM001', booth: 'Booth 1', status: 'Surveyed', phone: '+91 98765 43211' },
   { id: 3, name: 'Arun Patel', voterId: 'TND1234569', familyId: 'FAM002', booth: 'Booth 2', status: 'Pending', phone: '+91 98765 43212' },
@@ -17,6 +28,39 @@ const mockVoters = [
 export const VoterManager = () => {
   const { user } = useAuth();
   const acNumber = user?.assignedAC || 118;
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterBooth, setFilterBooth] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
+
+  const filteredVoters = useMemo(() => {
+    return initialVoters.filter(voter => {
+      // Search filter
+      if (searchTerm && 
+          !voter.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
+          !voter.voterId.toLowerCase().includes(searchTerm.toLowerCase())) {
+        return false;
+      }
+      
+      // Booth filter
+      if (filterBooth !== 'all' && voter.booth !== `Booth ${filterBooth}`) {
+        return false;
+      }
+      
+      // Status filter
+      if (filterStatus !== 'all') {
+        const statusMap: Record<string, string> = {
+          'surveyed': 'Surveyed',
+          'pending': 'Pending',
+          'not-contacted': 'Not Contacted'
+        };
+        if (voter.status !== statusMap[filterStatus]) {
+          return false;
+        }
+      }
+      
+      return true;
+    });
+  }, [searchTerm, filterBooth, filterStatus]);
 
   return (
     <DashboardLayout>
@@ -30,9 +74,14 @@ export const VoterManager = () => {
           <div className="flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input placeholder="Search by name or voter ID..." className="pl-10" />
+              <Input 
+                placeholder="Search by name or voter ID..." 
+                className="pl-10" 
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
             </div>
-            <Select>
+            <Select value={filterBooth} onValueChange={setFilterBooth}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by Booth" />
               </SelectTrigger>
@@ -43,7 +92,7 @@ export const VoterManager = () => {
                 <SelectItem value="3">Booth 3</SelectItem>
               </SelectContent>
             </Select>
-            <Select>
+            <Select value={filterStatus} onValueChange={setFilterStatus}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Survey Status" />
               </SelectTrigger>
@@ -76,7 +125,7 @@ export const VoterManager = () => {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {mockVoters.map((voter) => (
+                {filteredVoters.map((voter) => (
                   <tr key={voter.id} className="hover:bg-muted/50">
                     <td className="px-4 py-3 text-sm font-medium">{voter.name}</td>
                     <td className="px-4 py-3 text-sm">{voter.voterId}</td>

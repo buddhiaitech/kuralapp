@@ -9,14 +9,30 @@ import { UserPlus, Edit2, Trash2, Filter } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useToast } from '@/components/ui/use-toast';
 
-const mockBooths = [
+interface Booth {
+  id: string;
+  name: string;
+  ac: number;
+}
+
+interface Agent {
+  id: number;
+  name: string;
+  phone: string;
+  booths: string[];
+  ac: number;
+  status: 'Active' | 'Inactive';
+}
+
+const initialBooths: Booth[] = [
   { id: '1', name: 'Government School, Main Road', ac: 118 },
   { id: '2', name: 'Community Hall, West Street', ac: 118 },
   { id: '3', name: 'Primary School, East Area', ac: 119 },
 ];
 
-const mockAgents = [
+const initialAgents: Agent[] = [
   { id: 1, name: 'Rajesh Kumar', phone: '+91 98765 43210', booths: ['1'], ac: 118, status: 'Active' },
   { id: 2, name: 'Priya Sharma', phone: '+91 98765 43211', booths: ['2'], ac: 118, status: 'Active' },
   { id: 3, name: 'Arun Patel', phone: '+91 98765 43212', booths: ['1', '2'], ac: 118, status: 'Active' },
@@ -25,21 +41,51 @@ const mockAgents = [
 
 export const BoothAgentManagement = () => {
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [booths] = useState<Booth[]>(initialBooths);
+  const [agents, setAgents] = useState<Agent[]>(initialAgents);
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [editingAgent, setEditingAgent] = useState<Agent | null>(null);
+  const [filterAC, setFilterAC] = useState<string>('all');
+  
+  // Form states
+  const [newAgent, setNewAgent] = useState({
+    name: '',
+    phone: '',
+    ac: user?.role === 'L2' ? user.assignedAC : 118,
+  });
+  
+  const [editAgent, setEditAgent] = useState({
+    name: '',
+    phone: '',
+    ac: 118,
+  });
+  
   const [selectedBooths, setSelectedBooths] = useState<string[]>([]);
+  const [editSelectedBooths, setEditSelectedBooths] = useState<string[]>([]);
 
   // Filter data based on role
   const availableBooths = user?.role === 'L2' 
-    ? mockBooths.filter(booth => booth.ac === user.assignedAC)
-    : mockBooths;
+    ? booths.filter(booth => booth.ac === user.assignedAC)
+    : booths;
 
-  const filteredAgents = user?.role === 'L2' 
-    ? mockAgents.filter(agent => agent.ac === user.assignedAC)
-    : mockAgents;
+  const filteredAgents = (() => {
+    let result = user?.role === 'L2' 
+      ? agents.filter(agent => agent.ac === user.assignedAC)
+      : agents;
+      
+    // Apply AC filter for L0/L1 users
+    if (user?.role !== 'L2' && filterAC !== 'all') {
+      result = result.filter(agent => agent.ac === parseInt(filterAC));
+    }
+    
+    return result;
+  })();
 
   const getBoothNames = (boothIds: string[]) => {
     return boothIds.map(id => {
-      const booth = mockBooths.find(b => b.id === id);
+      const booth = booths.find(b => b.id === id);
       return booth?.name || `Booth ${id}`;
     }).join(', ');
   };
@@ -50,6 +96,98 @@ export const BoothAgentManagement = () => {
         ? prev.filter(id => id !== boothId)
         : [...prev, boothId]
     );
+  };
+
+  const toggleEditBooth = (boothId: string) => {
+    setEditSelectedBooths(prev => 
+      prev.includes(boothId) 
+        ? prev.filter(id => id !== boothId)
+        : [...prev, boothId]
+    );
+  };
+
+  const handleAddAgent = () => {
+    if (newAgent.name && newAgent.phone) {
+      const agentToAdd: Agent = {
+        id: Math.max(0, ...agents.map(a => a.id)) + 1,
+        name: newAgent.name,
+        phone: newAgent.phone,
+        booths: selectedBooths,
+        ac: newAgent.ac,
+        status: 'Active',
+      };
+      
+      setAgents([...agents, agentToAdd]);
+      setNewAgent({
+        name: '',
+        phone: '',
+        ac: user?.role === 'L2' ? user!.assignedAC : 118,
+      });
+      setSelectedBooths([]);
+      setIsOpen(false);
+      
+      toast({
+        title: 'Agent Added',
+        description: `"${agentToAdd.name}" has been added successfully.`
+      });
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all required fields.',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleEditClick = (agent: Agent) => {
+    setEditingAgent(agent);
+    setEditAgent({
+      name: agent.name,
+      phone: agent.phone,
+      ac: agent.ac,
+    });
+    setEditSelectedBooths(agent.booths);
+    setIsEditOpen(true);
+  };
+
+  const handleUpdateAgent = () => {
+    if (editingAgent && editAgent.name && editAgent.phone) {
+      setAgents(agents.map(agent => 
+        agent.id === editingAgent.id 
+          ? { ...agent, ...editAgent, booths: editSelectedBooths } 
+          : agent
+      ));
+      setIsEditOpen(false);
+      setEditingAgent(null);
+      setEditSelectedBooths([]);
+      
+      toast({
+        title: 'Agent Updated',
+        description: `"${editAgent.name}" has been updated successfully.`
+      });
+    } else {
+      toast({
+        title: 'Error',
+        description: 'Please fill in all required fields.',
+        variant: 'destructive'
+      });
+    }
+  };
+
+  const handleDeleteAgent = (id: number, name: string) => {
+    setAgents(agents.filter(agent => agent.id !== id));
+    toast({
+      title: 'Agent Deleted',
+      description: `"${name}" has been deleted successfully.`
+    });
+  };
+
+  const handleApplyFilter = () => {
+    // Filter is applied automatically through filteredAgents
+    toast({
+      title: 'Filter Applied',
+      description: 'Agents have been filtered by AC.'
+    });
   };
 
   return (
@@ -77,17 +215,30 @@ export const BoothAgentManagement = () => {
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Full Name</Label>
-                  <Input id="name" placeholder="Enter agent name" />
+                  <Label htmlFor="name">Full Name <span className="text-destructive">*</span></Label>
+                  <Input 
+                    id="name" 
+                    placeholder="Enter agent name" 
+                    value={newAgent.name}
+                    onChange={(e) => setNewAgent({...newAgent, name: e.target.value})}
+                  />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone Number</Label>
-                  <Input id="phone" placeholder="+91 XXXXX XXXXX" />
+                  <Label htmlFor="phone">Phone Number <span className="text-destructive">*</span></Label>
+                  <Input 
+                    id="phone" 
+                    placeholder="+91 XXXXX XXXXX" 
+                    value={newAgent.phone}
+                    onChange={(e) => setNewAgent({...newAgent, phone: e.target.value})}
+                  />
                 </div>
                 {user?.role !== 'L2' && (
                   <div className="space-y-2">
                     <Label htmlFor="ac">Assembly Constituency</Label>
-                    <Select>
+                    <Select 
+                      value={newAgent.ac.toString()} 
+                      onValueChange={(value) => setNewAgent({...newAgent, ac: parseInt(value)})}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select AC" />
                       </SelectTrigger>
@@ -124,7 +275,7 @@ export const BoothAgentManagement = () => {
                     {selectedBooths.length} booth{selectedBooths.length !== 1 ? 's' : ''} selected
                   </p>
                 </div>
-                <Button className="w-full" onClick={() => setIsOpen(false)}>
+                <Button className="w-full" onClick={handleAddAgent}>
                   Create Agent
                 </Button>
               </div>
@@ -135,7 +286,7 @@ export const BoothAgentManagement = () => {
         {user?.role !== 'L2' && (
           <Card className="p-4">
             <div className="flex space-x-4">
-              <Select>
+              <Select value={filterAC} onValueChange={setFilterAC}>
                 <SelectTrigger className="w-[200px]">
                   <SelectValue placeholder="Filter by AC" />
                 </SelectTrigger>
@@ -146,7 +297,7 @@ export const BoothAgentManagement = () => {
                   <SelectItem value="120">120 - Coimbatore South</SelectItem>
                 </SelectContent>
               </Select>
-              <Button variant="outline">
+              <Button variant="outline" onClick={handleApplyFilter}>
                 <Filter className="mr-2 h-4 w-4" />
                 Apply Filters
               </Button>
@@ -195,10 +346,18 @@ export const BoothAgentManagement = () => {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex space-x-2">
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleEditClick(agent)}
+                        >
                           <Edit2 className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="sm">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDeleteAgent(agent.id, agent.name)}
+                        >
                           <Trash2 className="h-4 w-4 text-destructive" />
                         </Button>
                       </div>
@@ -209,6 +368,87 @@ export const BoothAgentManagement = () => {
             </table>
           </div>
         </Card>
+
+        {/* Edit Agent Dialog */}
+        <Dialog open={isEditOpen} onOpenChange={(open) => {
+          setIsEditOpen(open);
+          if (!open) {
+            setEditingAgent(null);
+            setEditSelectedBooths([]);
+          }
+        }}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Edit Booth Agent</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="editName">Full Name <span className="text-destructive">*</span></Label>
+                <Input 
+                  id="editName" 
+                  placeholder="Enter agent name" 
+                  value={editAgent.name}
+                  onChange={(e) => setEditAgent({...editAgent, name: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="editPhone">Phone Number <span className="text-destructive">*</span></Label>
+                <Input 
+                  id="editPhone" 
+                  placeholder="+91 XXXXX XXXXX" 
+                  value={editAgent.phone}
+                  onChange={(e) => setEditAgent({...editAgent, phone: e.target.value})}
+                />
+              </div>
+              {user?.role !== 'L2' && (
+                <div className="space-y-2">
+                  <Label htmlFor="editAc">Assembly Constituency</Label>
+                  <Select 
+                    value={editAgent.ac.toString()} 
+                    onValueChange={(value) => setEditAgent({...editAgent, ac: parseInt(value)})}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select AC" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="118">118 - Thondamuthur</SelectItem>
+                      <SelectItem value="119">119 - Coimbatore North</SelectItem>
+                      <SelectItem value="120">120 - Coimbatore South</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              <div className="space-y-2">
+                <Label>Assign to Booths (Multiple Selection)</Label>
+                <Card className="p-4 max-h-48 overflow-y-auto">
+                  <div className="space-y-3">
+                    {availableBooths.map((booth) => (
+                      <div key={booth.id} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`edit-booth-${booth.id}`}
+                          checked={editSelectedBooths.includes(booth.id)}
+                          onCheckedChange={() => toggleEditBooth(booth.id)}
+                        />
+                        <Label
+                          htmlFor={`edit-booth-${booth.id}`}
+                          className="text-sm font-normal cursor-pointer"
+                        >
+                          {booth.name} {user?.role !== 'L2' && `(AC ${booth.ac})`}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+                <p className="text-sm text-muted-foreground">
+                  {editSelectedBooths.length} booth{editSelectedBooths.length !== 1 ? 's' : ''} selected
+                </p>
+              </div>
+              <Button className="w-full" onClick={handleUpdateAgent}>
+                Update Agent
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </DashboardLayout>
   );

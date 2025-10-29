@@ -6,20 +6,40 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Trash2, Plus } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from '@/components/ui/use-toast';
 
-const mockForms = [
+interface Form {
+  id: number;
+  name: string;
+}
+
+interface AC {
+  id: number;
+  number: number;
+  name: string;
+}
+
+interface Assignment {
+  id: number;
+  formName: string;
+  acNumber: number;
+  acName: string;
+  dateAssigned: string;
+}
+
+const mockForms: Form[] = [
   { id: 1, name: 'Voter Intake Form 2025' },
   { id: 2, name: 'Local Issues Survey' },
   { id: 3, name: 'Post-Election Feedback' },
 ];
 
-const mockACs = Array.from({ length: 21 }, (_, i) => ({
+const mockACs: AC[] = Array.from({ length: 21 }, (_, i) => ({
   id: i + 1,
   number: 100 + i,
   name: i === 18 ? 'Thondamuthur' : `AC ${100 + i}`
 }));
 
-const mockAssignments = [
+const initialAssignments: Assignment[] = [
   { id: 1, formName: 'Voter Intake Form 2025', acNumber: 118, acName: 'Thondamuthur', dateAssigned: '2024-03-15' },
   { id: 2, formName: 'Local Issues Survey', acNumber: 118, acName: 'Thondamuthur', dateAssigned: '2024-03-14' },
   { id: 3, formName: 'Voter Intake Form 2025', acNumber: 101, acName: 'AC 101', dateAssigned: '2024-03-13' },
@@ -27,15 +47,43 @@ const mockAssignments = [
 ];
 
 export const SurveyAssignments = () => {
+  const { toast } = useToast();
+  const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
   const [selectedForm, setSelectedForm] = useState<string>('');
   const [selectedAC, setSelectedAC] = useState<string>('');
 
   const handleAssign = () => {
     if (selectedForm && selectedAC) {
-      console.log('Assigning form:', selectedForm, 'to AC:', selectedAC);
-      setSelectedForm('');
-      setSelectedAC('');
+      const form = mockForms.find(f => f.id.toString() === selectedForm);
+      const ac = mockACs.find(a => a.id.toString() === selectedAC);
+      
+      if (form && ac) {
+        const newAssignment: Assignment = {
+          id: Math.max(0, ...assignments.map(a => a.id)) + 1,
+          formName: form.name,
+          acNumber: ac.number,
+          acName: ac.name,
+          dateAssigned: new Date().toISOString().split('T')[0],
+        };
+        
+        setAssignments([...assignments, newAssignment]);
+        setSelectedForm('');
+        setSelectedAC('');
+        
+        toast({
+          title: 'Assignment Created',
+          description: `"${form.name}" has been assigned to AC ${ac.number} - ${ac.name}`
+        });
+      }
     }
+  };
+
+  const handleDeleteAssignment = (id: number, formName: string, acNumber: number, acName: string) => {
+    setAssignments(assignments.filter(assignment => assignment.id !== id));
+    toast({
+      title: 'Assignment Removed',
+      description: `"${formName}" assignment to AC ${acNumber} - ${acName} has been removed`
+    });
   };
 
   return (
@@ -107,13 +155,22 @@ export const SurveyAssignments = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockAssignments.map((assignment) => (
+                {assignments.map((assignment) => (
                   <TableRow key={assignment.id}>
                     <TableCell className="font-medium">{assignment.formName}</TableCell>
                     <TableCell>{assignment.acNumber} - {assignment.acName}</TableCell>
                     <TableCell>{assignment.dateAssigned}</TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="sm">
+                      <Button 
+                        variant="ghost" 
+                        size="sm"
+                        onClick={() => handleDeleteAssignment(
+                          assignment.id, 
+                          assignment.formName, 
+                          assignment.acNumber, 
+                          assignment.acName
+                        )}
+                      >
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
                     </TableCell>

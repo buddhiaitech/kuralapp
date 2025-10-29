@@ -8,9 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Plus, Trash2, GripVertical, Save } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/components/ui/use-toast';
 
 const constituencies = [
   { number: 118, name: 'Thondamuthur' },
@@ -57,30 +58,96 @@ export const FormBuilder = () => {
   const { formId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
   const isNewForm = formId === 'new';
   const isL0 = user?.role === 'L0';
   const isL1 = user?.role === 'L1';
 
-  const [formData, setFormData] = useState<FormData>({
-    title: isNewForm ? '' : 'Voter Intake Form 2025',
-    description: isNewForm ? '' : 'Collect voter information and preferences',
-    assignedACs: isNewForm ? [] : [118, 119],
-    questions: isNewForm ? [] : [
-      {
-        id: '1',
-        text: 'What is your name?',
-        type: 'short-text',
-        required: true,
-      },
-      {
-        id: '2',
-        text: 'Which party will you vote for?',
-        type: 'multiple-choice',
-        required: true,
-        options: ['Party A', 'Party B', 'Party C', 'Undecided'],
-      },
-    ],
-  });
+  // Get form data from localStorage based on formId
+  const getFormById = (id: string) => {
+    if (id === 'new') return null;
+    
+    // Try to get from temporary storage first (for editing)
+    const tempStorageKey = isL0 ? 'currentEditingForm' : isL1 ? 'currentEditingFormL1' : 'currentEditingFormL2';
+    const tempStored = localStorage.getItem(tempStorageKey);
+    if (tempStored) {
+      try {
+        const tempForm = JSON.parse(tempStored);
+        if (tempForm.id.toString() === id) {
+          return tempForm;
+        }
+      } catch (e) {
+        // If parsing fails, continue to regular storage
+      }
+    }
+    
+    // Otherwise get from regular data storage
+    const storageKey = isL0 ? 'surveyFormsData' : isL1 ? 'surveyFormsDataL1' : 'surveyFormsDataL2';
+    const storedForms = localStorage.getItem(storageKey);
+    if (!storedForms) return null;
+    
+    try {
+      const forms = JSON.parse(storedForms);
+      return forms.find((form: any) => form.id.toString() === id);
+    } catch (e) {
+      return null;
+    }
+  };
+
+  // Initialize form data based on whether it's a new form or editing existing
+  const initialFormData = () => {
+    if (isNewForm) {
+      return {
+        title: '',
+        description: '',
+        assignedACs: [],
+        questions: [],
+      };
+    }
+    
+    // Try to load existing form data
+    const existingForm = getFormById(formId || '');
+    if (existingForm) {
+      return {
+        title: existingForm.title || '',
+        description: existingForm.description || '',
+        assignedACs: existingForm.assignedACs || [],
+        questions: existingForm.questions || [],
+      };
+    }
+    
+    // Fallback to default data if form not found
+    return {
+      title: 'Voter Intake Form 2025',
+      description: 'Collect voter information and preferences',
+      assignedACs: [118, 119],
+      questions: [
+        {
+          id: '1',
+          text: 'What is your name?',
+          type: 'short-text',
+          required: true,
+        },
+        {
+          id: '2',
+          text: 'Which party will you vote for?',
+          type: 'multiple-choice',
+          required: true,
+          options: ['Party A', 'Party B', 'Party C', 'Undecided'],
+        },
+      ],
+    };
+  };
+
+  const [formData, setFormData] = useState<FormData>(initialFormData());
+
+  // Clean up temporary storage when component unmounts
+  useEffect(() => {
+    return () => {
+      const tempStorageKey = isL0 ? 'currentEditingForm' : isL1 ? 'currentEditingFormL1' : 'currentEditingFormL2';
+      localStorage.removeItem(tempStorageKey);
+    };
+  }, [isL0, isL1]);
 
   const addQuestion = () => {
     const newQuestion: Question = {
@@ -151,7 +218,110 @@ export const FormBuilder = () => {
 
   const handleSave = () => {
     console.log('Saving form:', formData);
-    const redirectPath = isL0 ? '/l0/surveys' : '/l1/surveys';
+    
+    // Determine which storage keys to use based on user role
+    const metadataStorageKey = isL0 ? 'surveyForms' : isL1 ? 'surveyFormsL1' : 'surveyFormsL2';
+    const dataStorageKey = isL0 ? 'surveyFormsData' : isL1 ? 'surveyFormsDataL1' : 'surveyFormsDataL2';
+    
+    // Get existing forms metadata
+    const storedMetadata = localStorage.getItem(metadataStorageKey);
+    let formsMetadata = storedMetadata ? JSON.parse(storedMetadata) : (
+      isL0 ? [
+        { id: 1, name: 'Voter Intake Form 2025', questions: 4, status: 'Active', created: '2024-01-15' },
+        { id: 2, name: 'Local Issues Survey', questions: 3, status: 'Active', created: '2024-02-01' },
+        { id: 3, name: 'Post-Election Feedback', questions: 2, status: 'Draft', created: '2024-03-10' },
+      ] : isL1 ? [
+        { id: 1, name: 'Voter Intake Form 2025', questions: 4, assignedACs: 5, status: 'Active', created: '2024-01-15' },
+        { id: 2, name: 'Local Issues Survey', questions: 3, assignedACs: 12, status: 'Active', created: '2024-02-01' },
+        { id: 3, name: 'Post-Election Feedback', questions: 2, assignedACs: 0, status: 'Draft', created: '2024-03-10' },
+      ] : []
+    );
+    
+    // Get existing forms data
+    const storedData = localStorage.getItem(dataStorageKey);
+    let formsData = storedData ? JSON.parse(storedData) : [];
+    
+    if (isNewForm) {
+      // Add new form
+      const newId = Math.max(0, ...formsMetadata.map((f: any) => f.id)) + 1;
+      
+      const newMetadata = isL0 ? {
+        id: newId,
+        name: formData.title || 'Untitled Form',
+        questions: formData.questions.length,
+        status: 'Draft' as const,
+        created: new Date().toISOString().split('T')[0],
+      } : {
+        id: newId,
+        name: formData.title || 'Untitled Form',
+        questions: formData.questions.length,
+        assignedACs: formData.assignedACs.length,
+        status: 'Draft' as const,
+        created: new Date().toISOString().split('T')[0],
+      };
+      
+      const newData = {
+        id: newId,
+        title: formData.title || 'Untitled Form',
+        description: formData.description,
+        assignedACs: formData.assignedACs,
+        questions: formData.questions,
+      };
+      
+      formsMetadata.push(newMetadata);
+      formsData.push(newData);
+      
+      toast({
+        title: 'Form Created',
+        description: `"${newMetadata.name}" has been created successfully.`
+      });
+    } else {
+      // Update existing form
+      const formIdNum = parseInt(formId || '0');
+      const metadataIndex = formsMetadata.findIndex((f: any) => f.id === formIdNum);
+      const dataIndex = formsData.findIndex((f: any) => f.id === formIdNum);
+      
+      if (metadataIndex !== -1) {
+        const updatedMetadata = isL0 ? {
+          ...formsMetadata[metadataIndex],
+          name: formData.title || formsMetadata[metadataIndex].name,
+          questions: formData.questions.length,
+        } : {
+          ...formsMetadata[metadataIndex],
+          name: formData.title || formsMetadata[metadataIndex].name,
+          questions: formData.questions.length,
+          assignedACs: formData.assignedACs.length,
+        };
+        
+        formsMetadata[metadataIndex] = updatedMetadata;
+        
+        toast({
+          title: 'Form Updated',
+          description: `"${updatedMetadata.name}" has been updated successfully.`
+        });
+      }
+      
+      // Update form data
+      const updatedData = {
+        id: formIdNum,
+        title: formData.title,
+        description: formData.description,
+        assignedACs: formData.assignedACs,
+        questions: formData.questions,
+      };
+      
+      if (dataIndex !== -1) {
+        formsData[dataIndex] = updatedData;
+      } else {
+        formsData.push(updatedData);
+      }
+    }
+    
+    // Save updated forms lists
+    localStorage.setItem(metadataStorageKey, JSON.stringify(formsMetadata));
+    localStorage.setItem(dataStorageKey, JSON.stringify(formsData));
+    
+    const redirectPath = isL0 ? '/l0/surveys' : isL1 ? '/l1/surveys' : '/l2/surveys';
     navigate(redirectPath);
   };
 

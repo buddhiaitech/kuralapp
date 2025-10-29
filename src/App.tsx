@@ -38,6 +38,7 @@ import { SurveyManager } from "@/pages/l2/SurveyManager";
 import { LiveBoothUpdates } from "@/pages/l2/LiveBoothUpdates";
 import { Reports } from "@/pages/l2/Reports";
 import { SurveyForms as L2SurveyForms } from "@/pages/l2/SurveyForms";
+import { FormPreview } from "@/pages/shared/FormPreview";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -89,6 +90,7 @@ const AppRoutes = () => {
       <Route path="/l0/voters" element={<ProtectedRoute allowedRoles={['L0']}><VoterData /></ProtectedRoute>} />
       <Route path="/l0/surveys" element={<ProtectedRoute allowedRoles={['L0']}><SurveyBank /></ProtectedRoute>} />
       <Route path="/l0/surveys/builder/:formId" element={<ProtectedRoute allowedRoles={['L0']}><FormBuilder /></ProtectedRoute>} />
+      <Route path="/l0/surveys/preview/:formId" element={<ProtectedRoute allowedRoles={['L0']}><FormPreview /></ProtectedRoute>} />
       <Route path="/l0/booths" element={<ProtectedRoute allowedRoles={['L0']}><BoothManagement /></ProtectedRoute>} />
       <Route path="/l0/booth-agents" element={<ProtectedRoute allowedRoles={['L0']}><BoothAgentManagement /></ProtectedRoute>} />
       <Route path="/l0/activity-logs" element={<ProtectedRoute allowedRoles={['L0']}><L0ActivityLogs /></ProtectedRoute>} />
@@ -105,6 +107,7 @@ const AppRoutes = () => {
       <Route path="/l1/ac-comparison" element={<ProtectedRoute allowedRoles={['L1']}><ACComparison /></ProtectedRoute>} />
       <Route path="/l1/surveys" element={<ProtectedRoute allowedRoles={['L1']}><SurveyForms /></ProtectedRoute>} />
       <Route path="/l1/surveys/builder/:formId" element={<ProtectedRoute allowedRoles={['L1']}><FormBuilder /></ProtectedRoute>} />
+      <Route path="/l1/surveys/preview/:formId" element={<ProtectedRoute allowedRoles={['L1']}><FormPreview /></ProtectedRoute>} />
       <Route path="/l1/survey-assignments" element={<ProtectedRoute allowedRoles={['L1']}><SurveyAssignments /></ProtectedRoute>} />
               <Route path="/l1/moderators" element={<ProtectedRoute allowedRoles={['L1']}><ModeratorManagement /></ProtectedRoute>} />
               <Route path="/l1/booths" element={<ProtectedRoute allowedRoles={['L1']}><BoothManagement /></ProtectedRoute>} />
@@ -120,6 +123,7 @@ const AppRoutes = () => {
       <Route path="/l2/survey-forms" element={<ProtectedRoute allowedRoles={['L2']}><L2SurveyForms /></ProtectedRoute>} />
       <Route path="/l2/surveys" element={<ProtectedRoute allowedRoles={['L2']}><SurveyManager /></ProtectedRoute>} />
       <Route path="/l2/surveys/builder/:formId" element={<ProtectedRoute allowedRoles={['L2']}><FormBuilder /></ProtectedRoute>} />
+      <Route path="/l2/surveys/preview/:formId" element={<ProtectedRoute allowedRoles={['L2']}><FormPreview /></ProtectedRoute>} />
       <Route path="/l2/booths" element={<ProtectedRoute allowedRoles={['L2']}><BoothManagement /></ProtectedRoute>} />
       <Route path="/l2/booth-agents" element={<ProtectedRoute allowedRoles={['L2']}><BoothAgentManagement /></ProtectedRoute>} />
       <Route path="/l2/live-updates" element={<ProtectedRoute allowedRoles={['L2']}><LiveBoothUpdates /></ProtectedRoute>} />
