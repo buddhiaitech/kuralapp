@@ -1,8 +1,12 @@
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { StatCard } from '@/components/StatCard';
 import { Card } from '@/components/ui/card';
-import { Users, Home, FileCheck, TrendingUp } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Users, Home, FileCheck, TrendingUp, Download } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
+import { ExportButton } from '@/components/ExportButton';
+import { useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 const boothPerformance = [
   { booth: 'Booth 1', voters: 145, surveyed: 89, completion: 61.4 },
@@ -13,13 +17,72 @@ const boothPerformance = [
 export const Reports = () => {
   const { user } = useAuth();
   const acNumber = user?.assignedAC || 118;
+  const [boothFilter, setBoothFilter] = useState<string>('all');
+
+  // Get unique booths for filter options
+  const uniqueBooths = Array.from(new Set(boothPerformance.map(item => item.booth)));
+
+  // Filter booth performance data
+  const filteredBoothPerformance = boothPerformance.filter(item => {
+    return boothFilter === 'all' || item.booth === boothFilter;
+  });
+
+  // Prepare data for export
+  const exportData = {
+    voters: 1247,
+    surveys: 156,
+    completion: 12.5,
+    booths: 3,
+    boothPerformance: filteredBoothPerformance,
+    surveyQuestions: [
+      { question: 'Which party will you vote for?', responses: 89, percentage: 57 },
+      { question: 'What is your primary concern?', responses: 76, percentage: 49 },
+      { question: 'Rate government performance', responses: 54, percentage: 35 },
+    ],
+    agentPerformance: [
+      { name: 'Rajesh Kumar', surveys: 89, quality: 92, booth: 'Booth 1' },
+      { name: 'Priya Sharma', surveys: 76, quality: 88, booth: 'Booth 2' },
+      { name: 'Arun Patel', surveys: 92, quality: 95, booth: 'Booth 3' },
+    ],
+    weeklyTrend: [
+      { week: 'Week 1', completed: 24 },
+      { week: 'Week 2', completed: 32 },
+      { week: 'Week 3', completed: 45 },
+      { week: 'Week 4', completed: 55 },
+    ],
+    responseDistribution: [
+      { name: 'Surveyed', value: 156 },
+      { name: 'Pending', value: 872 },
+      { name: 'Not Contacted', value: 219 },
+    ],
+  };
 
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Reports & Analytics</h1>
-          <p className="text-muted-foreground">Performance data for AC {acNumber} - Thondamuthur</p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Reports & Analytics</h1>
+            <p className="text-muted-foreground">Performance data for AC {acNumber} - Thondamuthur</p>
+          </div>
+          <div className="flex gap-2">
+            <Select value={boothFilter} onValueChange={setBoothFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Filter by Booth" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Booths</SelectItem>
+                {uniqueBooths.map((booth) => (
+                  <SelectItem key={booth} value={booth}>{booth}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <ExportButton 
+              data={exportData}
+              filename={`AC-${acNumber}-Performance-Report`}
+              acNumber={acNumber?.toString()}
+            />
+          </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -43,22 +106,30 @@ export const Reports = () => {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {boothPerformance.map((row, idx) => (
-                  <tr key={idx} className="hover:bg-muted/50">
-                    <td className="px-4 py-3 text-sm font-medium">{row.booth}</td>
-                    <td className="px-4 py-3 text-sm">{row.voters}</td>
-                    <td className="px-4 py-3 text-sm">{row.surveyed}</td>
-                    <td className="px-4 py-3 text-sm font-semibold">{row.completion}%</td>
-                    <td className="px-4 py-3">
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div 
-                          className="bg-success h-2 rounded-full transition-all"
-                          style={{ width: `${row.completion}%` }}
-                        />
-                      </div>
+                {filteredBoothPerformance.length > 0 ? (
+                  filteredBoothPerformance.map((row, idx) => (
+                    <tr key={idx} className="hover:bg-muted/50">
+                      <td className="px-4 py-3 text-sm font-medium">{row.booth}</td>
+                      <td className="px-4 py-3 text-sm">{row.voters}</td>
+                      <td className="px-4 py-3 text-sm">{row.surveyed}</td>
+                      <td className="px-4 py-3 text-sm font-semibold">{row.completion}%</td>
+                      <td className="px-4 py-3">
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div 
+                            className="bg-success h-2 rounded-full transition-all"
+                            style={{ width: `${row.completion}%` }}
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={5} className="px-4 py-8 text-center text-muted-foreground">
+                      No booth data available.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

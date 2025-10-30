@@ -126,3 +126,183 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Custom styles for improved sidebar responsiveness */
+@layer components {
+  [data-sidebar="sidebar"] {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  [data-sidebar="menu-button"] {
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  /* Ensure proper spacing and sizing for collapsed sidebar */
+  .group-data-\[collapsible\=icon\]\:w-\[var\(--sidebar-width-icon\)\] {
+    @apply transition-all duration-300 ease-in-out;
+  }
+  
+  /* Improve touch targets for all screen sizes */
+  @media (max-width: 768px) {
+    [data-sidebar="menu-button"] {
+      @apply h-10;
+    }
+    
+    [data-sidebar="menu-sub-button"] {
+      @apply h-9;
+    }
+  }
+  
+  /* Medium screen specific fixes (tablets) */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    [data-sidebar="menu-button"] {
+      @apply h-9;
+    }
+    
+    .sidebar-footer-content {
+      @apply flex flex-col items-center justify-center;
+    }
+    
+    .sidebar-user-info {
+      @apply flex flex-col items-center justify-center h-16;
+    }
+    
+    /* Ensure sidebar is visible on medium screens */
+    .md\:flex {
+      display: flex !important;
+    }
+    
+    /* Fix for overlapping issues on tablets */
+    [data-sidebar="sidebar"] {
+      min-width: 3rem;
+    }
+  }
+  
+  /* Large tablet to small desktop screens */
+  @media (min-width: 1024px) and (max-width: 1280px) {
+    .sidebar-user-info {
+      @apply p-2;
+    }
+    
+    .sidebar-user-info p {
+      @apply text-xs;
+    }
+  }
+  
+  /* Ensure icons are always visible and don't shrink */
+  .sidebar-icon {
+    @apply flex-shrink-0;
+  }
+  
+  /* Fix for logout button visibility and functionality */
+  .logout-button {
+    @apply flex items-center w-full transition-all duration-200 ease-in-out;
+  }
+  
+  /* Ensure proper spacing in collapsed state */
+  .sidebar-collapsed .sidebar-menu-button {
+    @apply justify-center;
+  }
+  
+  /* Additional fixes for medium screens */
+  @media (min-width: 768px) and (max-width: 1200px) {
+    [data-sidebar="sidebar"] {
+      min-width: 3rem !important;
+    }
+    
+    .group-data-\[collapsible\=icon\]\:w-\[var\(--sidebar-width-icon\)\] {
+      width: var(--sidebar-width-icon) !important;
+    }
+  }
+  
+  /* Mobile-specific fixes */
+  @media (max-width: 767px) {
+    .sidebar-user-info {
+      @apply h-14 p-2;
+    }
+    
+    .logout-button {
+      @apply h-10;
+    }
+  }
+  
+  /* Ensure proper z-index for sidebar elements */
+  .sidebar-user-info,
+  .logout-button {
+    z-index: 10;
+  }
+  
+  /* Fix for top navigation view */
+  @media (max-width: 768px) {
+    .sidebar-user-info {
+      min-height: 64px;
+    }
+  }
+  
+  /* Ensure proper display of user info in all states */
+  .sidebar-user-info > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  /* Fix for developer/admin information visibility */
+  .sidebar-user-info p {
+    line-height: 1.2;
+  }
+  
+  /* Ensure logout icon is always visible */
+  .logout-button svg {
+    min-width: 20px;
+    min-height: 20px;
+  }
+  
+  /* Tablet-specific adjustments for better visibility */
+  @media (min-width: 768px) and (max-width: 1024px) {
+    .logout-button span {
+      font-size: 0.875rem;
+    }
+    
+    .sidebar-user-info {
+      min-height: 70px;
+    }
+  }
+  
+  /* Ensure sidebar visibility on all screen sizes */
+  @media (min-width: 768px) {
+    [data-sidebar="sidebar"] {
+      display: flex !important;
+    }
+  }
+  
+  /* Fix for overlapping issues on medium screens */
+  @media (min-width: 768px) and (max-width: 1200px) {
+    [data-sidebar="content"] {
+      overflow-y: auto;
+      max-height: calc(100vh - 180px);
+    }
+  }
+  
+  /* Ensure proper spacing for sidebar elements on all screens */
+  @media (min-width: 768px) {
+    [data-sidebar="footer"] {
+      margin-top: auto;
+    }
+  }
+  
+  /* Fix for z-index issues on mobile */
+  @media (max-width: 767px) {
+    [data-sidebar="sidebar"] {
+      z-index: 50;
+    }
+  }
+  
+  /* Ensure proper icon sizing across all viewports */
+  [data-sidebar="menu-button"] svg,
+  [data-sidebar="trigger"] svg {
+    min-width: 20px;
+    min-height: 20px;
+  }
+}

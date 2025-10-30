@@ -3,9 +3,11 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Search, ArrowLeft, Home, Users } from 'lucide-react';
 import { useState } from 'react';
+import { FamilyDetailDrawer } from '@/components/FamilyDetailDrawer';
 
 const mockFamilies = [
   { id: 'F-234', headName: 'Rajesh Kumar', members: 4, booth: 'B-101', surveyed: 3, address: '12/5, MG Road, Sector 5' },
@@ -19,11 +21,25 @@ export const ACFamilyManager = () => {
   const { acNumber } = useParams();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
+  const [boothFilter, setBoothFilter] = useState('all');
+  const [selectedFamily, setSelectedFamily] = useState<any>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const filteredFamilies = mockFamilies.filter(family =>
-    family.headName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    family.id.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredFamilies = mockFamilies.filter(family => {
+    const matchesSearch = family.headName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      family.id.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesBooth = boothFilter === 'all' || family.booth === boothFilter;
+    
+    return matchesSearch && matchesBooth;
+  });
+
+  const uniqueBooths = Array.from(new Set(mockFamilies.map(family => family.booth)));
+
+  const handleViewDetails = (family: any) => {
+    setSelectedFamily(family);
+    setIsDrawerOpen(true);
+  };
 
   return (
     <DashboardLayout>
@@ -39,14 +55,29 @@ export const ACFamilyManager = () => {
         </div>
 
         <Card className="p-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by family ID or head of household..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10"
-            />
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search by family ID or head of household..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+            <div className="w-full md:w-48">
+              <Select value={boothFilter} onValueChange={setBoothFilter}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Filter by Booth" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Booths</SelectItem>
+                  {uniqueBooths.map(booth => (
+                    <SelectItem key={booth} value={booth}>{booth}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
         </Card>
 
@@ -64,7 +95,7 @@ export const ACFamilyManager = () => {
                       <p className="text-sm text-muted-foreground">{family.headName}</p>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">View Details</Button>
+                  <Button variant="outline" size="sm" onClick={() => handleViewDetails(family)}>View Details</Button>
                 </div>
 
                 <div className="space-y-2">
@@ -93,6 +124,12 @@ export const ACFamilyManager = () => {
           ))}
         </div>
       </div>
+
+      <FamilyDetailDrawer 
+        open={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        familyData={selectedFamily} 
+      />
     </DashboardLayout>
   );
 };

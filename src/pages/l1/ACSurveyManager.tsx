@@ -4,27 +4,78 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, FileCheck } from 'lucide-react';
+import { ArrowLeft, FileCheck, Eye } from 'lucide-react';
 import { useState } from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { SurveyDetailDrawer } from '@/components/SurveyDetailDrawer';
 
 const mockSurveys = [
-  { id: 1, voter: 'Rajesh Kumar', booth: 'B-101', date: '2024-01-15', question: 'Which party do you prefer?', answer: 'Party A' },
-  { id: 2, voter: 'Priya Sharma', booth: 'B-102', date: '2024-01-16', question: 'Main issues in your area?', answer: 'Infrastructure development' },
-  { id: 3, voter: 'Arun Patel', booth: 'B-101', date: '2024-01-16', question: 'Which party do you prefer?', answer: 'Party B' },
-  { id: 4, voter: 'Suresh Reddy', booth: 'B-102', date: '2024-01-17', question: 'Main issues in your area?', answer: 'Water supply' },
-  { id: 5, voter: 'Meena Devi', booth: 'B-103', date: '2024-01-17', question: 'Which party do you prefer?', answer: 'Undecided' },
+  { id: 1, voter: 'Rajesh Kumar', voterId: 'VOT123456', booth: 'B-101', date: '2024-01-15', question: 'Which party do you prefer?', answer: 'Party A', agent: 'Rajesh Kumar' },
+  { id: 2, voter: 'Priya Sharma', voterId: 'VOT123457', booth: 'B-102', date: '2024-01-16', question: 'Main issues in your area?', answer: 'Infrastructure development', agent: 'Priya Sharma' },
+  { id: 3, voter: 'Arun Patel', voterId: 'VOT123458', booth: 'B-101', date: '2024-01-16', question: 'Which party do you prefer?', answer: 'Party B', agent: 'Arun Patel' },
+  { id: 4, voter: 'Suresh Reddy', voterId: 'VOT123459', booth: 'B-102', date: '2024-01-17', question: 'Main issues in your area?', answer: 'Water supply', agent: 'Suresh Reddy' },
+  { id: 5, voter: 'Meena Devi', voterId: 'VOT123460', booth: 'B-103', date: '2024-01-17', question: 'Which party do you prefer?', answer: 'Undecided', agent: 'Meena Devi' },
 ];
 
 export const ACSurveyManager = () => {
   const { acNumber } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [formFilter, setFormFilter] = useState('all');
   const [boothFilter, setBoothFilter] = useState('all');
+  const [selectedSurvey, setSelectedSurvey] = useState<any>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const filteredSurveys = mockSurveys.filter(survey => {
+    const matchesForm = formFilter === 'all' || 
+      (formFilter === 'form1' && survey.question.includes('party')) ||
+      (formFilter === 'form2' && survey.question.includes('issues'));
     const matchesBooth = boothFilter === 'all' || survey.booth === boothFilter;
-    return matchesBooth;
+    return matchesForm && matchesBooth;
   });
+
+  const handleExportResults = () => {
+    // In a real application, this would export the actual data
+    // For now, we'll just show a toast notification
+    toast({
+      title: 'Export Started',
+      description: 'Survey results export has been initiated. The file will be downloaded shortly.',
+    });
+    
+    // Simulate export process
+    setTimeout(() => {
+      const csvContent = [
+        ['Voter', 'Booth', 'Date', 'Question', 'Answer'],
+        ...mockSurveys.map(survey => [
+          survey.voter,
+          survey.booth,
+          survey.date,
+          survey.question,
+          survey.answer
+        ])
+      ]
+        .map(row => row.join(','))
+        .join('\n');
+
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `AC-${acNumber}-Survey-Results.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+
+      toast({
+        title: 'Export Complete',
+        description: 'Survey results have been successfully exported.',
+      });
+    }, 1500);
+  };
+
+  const handleViewDetails = (survey: any) => {
+    setSelectedSurvey(survey);
+    setIsDrawerOpen(true);
+  };
 
   return (
     <DashboardLayout>
@@ -64,7 +115,7 @@ export const ACSurveyManager = () => {
               </SelectContent>
             </Select>
 
-            <Button variant="outline" className="gap-2">
+            <Button variant="outline" className="gap-2" onClick={handleExportResults}>
               <FileCheck className="h-4 w-4" />
               Export Results
             </Button>
@@ -86,12 +137,20 @@ export const ACSurveyManager = () => {
                     <p className="text-sm">A: {survey.answer}</p>
                   </div>
                 </div>
-                <Button variant="ghost" size="sm">View Full Response</Button>
+                <Button variant="ghost" size="sm" onClick={() => handleViewDetails(survey)}>
+                  <Eye className="h-4 w-4" />
+                </Button>
               </div>
             </Card>
           ))}
         </div>
       </div>
+
+      <SurveyDetailDrawer 
+        open={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        surveyData={selectedSurvey} 
+      />
     </DashboardLayout>
   );
 };

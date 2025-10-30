@@ -5,62 +5,48 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { Search, Filter, Eye } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
+import { VoterDetailDrawer } from '@/components/VoterDetailDrawer';
 
-interface Voter {
-  id: number;
-  name: string;
-  voterId: string;
-  familyId: string;
-  booth: string;
-  status: 'Surveyed' | 'Pending' | 'Not Contacted';
-  phone: string;
-}
-
-const initialVoters: Voter[] = [
-  { id: 1, name: 'Rajesh Kumar', voterId: 'TND1234567', familyId: 'FAM001', booth: 'Booth 1', status: 'Surveyed', phone: '+91 98765 43210' },
-  { id: 2, name: 'Priya Sharma', voterId: 'TND1234568', familyId: 'FAM001', booth: 'Booth 1', status: 'Surveyed', phone: '+91 98765 43211' },
-  { id: 3, name: 'Arun Patel', voterId: 'TND1234569', familyId: 'FAM002', booth: 'Booth 2', status: 'Pending', phone: '+91 98765 43212' },
-  { id: 4, name: 'Meena Devi', voterId: 'TND1234570', familyId: 'FAM003', booth: 'Booth 1', status: 'Not Contacted', phone: '+91 98765 43213' },
-  { id: 5, name: 'Suresh Babu', voterId: 'TND1234571', familyId: 'FAM002', booth: 'Booth 3', status: 'Surveyed', phone: '+91 98765 43214' },
+const mockVoters = [
+  { id: 1, name: 'Rajesh Kumar', voterId: 'TND1234567', familyId: 'FAM001', booth: 'Booth 1', status: 'Surveyed', phone: '+91 98765 43210', age: 45, gender: 'Male', surveyed: true },
+  { id: 2, name: 'Priya Sharma', voterId: 'TND1234568', familyId: 'FAM001', booth: 'Booth 1', status: 'Surveyed', phone: '+91 98765 43211', age: 40, gender: 'Female', surveyed: true },
+  { id: 3, name: 'Arun Patel', voterId: 'TND1234569', familyId: 'FAM002', booth: 'Booth 2', status: 'Pending', phone: '+91 98765 43212', age: 35, gender: 'Male', surveyed: false },
+  { id: 4, name: 'Meena Devi', voterId: 'TND1234570', familyId: 'FAM003', booth: 'Booth 1', status: 'Not Contacted', phone: '+91 98765 43213', age: 55, gender: 'Female', surveyed: false },
+  { id: 5, name: 'Suresh Babu', voterId: 'TND1234571', familyId: 'FAM002', booth: 'Booth 3', status: 'Surveyed', phone: '+91 98765 43214', age: 48, gender: 'Male', surveyed: true },
 ];
 
 export const VoterManager = () => {
   const { user } = useAuth();
   const acNumber = user?.assignedAC || 118;
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterBooth, setFilterBooth] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [boothFilter, setBoothFilter] = useState<string>('all');
+  const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [selectedVoter, setSelectedVoter] = useState<any>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const filteredVoters = useMemo(() => {
-    return initialVoters.filter(voter => {
-      // Search filter
-      if (searchTerm && 
-          !voter.name.toLowerCase().includes(searchTerm.toLowerCase()) && 
-          !voter.voterId.toLowerCase().includes(searchTerm.toLowerCase())) {
-        return false;
-      }
-      
-      // Booth filter
-      if (filterBooth !== 'all' && voter.booth !== `Booth ${filterBooth}`) {
-        return false;
-      }
-      
-      // Status filter
-      if (filterStatus !== 'all') {
-        const statusMap: Record<string, string> = {
-          'surveyed': 'Surveyed',
-          'pending': 'Pending',
-          'not-contacted': 'Not Contacted'
-        };
-        if (voter.status !== statusMap[filterStatus]) {
-          return false;
-        }
-      }
-      
-      return true;
-    });
-  }, [searchTerm, filterBooth, filterStatus]);
+  // Get unique booths for filter options
+  const uniqueBooths = Array.from(new Set(mockVoters.map(voter => voter.booth)));
+
+  // Filter voters based on search term and filters
+  const filteredVoters = mockVoters.filter(voter => {
+    // Search filter
+    const matchesSearch = voter.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         voter.voterId.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    // Booth filter
+    const matchesBooth = boothFilter === 'all' || voter.booth === boothFilter;
+    
+    // Status filter
+    const matchesStatus = statusFilter === 'all' || voter.status.toLowerCase().replace(' ', '-') === statusFilter;
+    
+    return matchesSearch && matchesBooth && matchesStatus;
+  });
+
+  const handleViewDetails = (voter: any) => {
+    setSelectedVoter(voter);
+    setIsDrawerOpen(true);
+  };
 
   return (
     <DashboardLayout>
@@ -81,18 +67,18 @@ export const VoterManager = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            <Select value={filterBooth} onValueChange={setFilterBooth}>
+            <Select value={boothFilter} onValueChange={setBoothFilter}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Filter by Booth" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Booths</SelectItem>
-                <SelectItem value="1">Booth 1</SelectItem>
-                <SelectItem value="2">Booth 2</SelectItem>
-                <SelectItem value="3">Booth 3</SelectItem>
+                {uniqueBooths.map((booth) => (
+                  <SelectItem key={booth} value={booth}>{booth}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Survey Status" />
               </SelectTrigger>
@@ -103,7 +89,7 @@ export const VoterManager = () => {
                 <SelectItem value="not-contacted">Not Contacted</SelectItem>
               </SelectContent>
             </Select>
-            <Button variant="outline">
+            <Button variant="outline" onClick={() => {}}>
               <Filter className="mr-2 h-4 w-4" />
               Apply
             </Button>
@@ -125,34 +111,48 @@ export const VoterManager = () => {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {filteredVoters.map((voter) => (
-                  <tr key={voter.id} className="hover:bg-muted/50">
-                    <td className="px-4 py-3 text-sm font-medium">{voter.name}</td>
-                    <td className="px-4 py-3 text-sm">{voter.voterId}</td>
-                    <td className="px-4 py-3 text-sm">{voter.familyId}</td>
-                    <td className="px-4 py-3 text-sm">{voter.booth}</td>
-                    <td className="px-4 py-3 text-sm">{voter.phone}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        voter.status === 'Surveyed' ? 'bg-success/10 text-success' :
-                        voter.status === 'Pending' ? 'bg-warning/10 text-warning' :
-                        'bg-muted text-muted-foreground'
-                      }`}>
-                        {voter.status}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <Button variant="ghost" size="sm">
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                {filteredVoters.length > 0 ? (
+                  filteredVoters.map((voter) => (
+                    <tr key={voter.id} className="hover:bg-muted/50">
+                      <td className="px-4 py-3 text-sm font-medium">{voter.name}</td>
+                      <td className="px-4 py-3 text-sm">{voter.voterId}</td>
+                      <td className="px-4 py-3 text-sm">{voter.familyId}</td>
+                      <td className="px-4 py-3 text-sm">{voter.booth}</td>
+                      <td className="px-4 py-3 text-sm">{voter.phone}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                          voter.status === 'Surveyed' ? 'bg-success/10 text-success' :
+                          voter.status === 'Pending' ? 'bg-warning/10 text-warning' :
+                          'bg-muted text-muted-foreground'
+                        }`}>
+                          {voter.status}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <Button variant="ghost" size="sm" onClick={() => handleViewDetails(voter)}>
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={7} className="px-4 py-8 text-center text-muted-foreground">
+                      No voters match the current filters.
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>
         </Card>
       </div>
+
+      <VoterDetailDrawer 
+        open={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        voterData={selectedVoter} 
+      />
     </DashboardLayout>
   );
 };

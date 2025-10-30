@@ -6,6 +6,7 @@ import { ExportButton } from '@/components/ExportButton';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, Home, FileCheck, TrendingUp, BarChart3 } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useToast } from '@/hooks/use-toast';
 
 const boothPerformance = [
   { booth: 'B-101', voters: 245, surveyed: 189, completion: 77.1 },
@@ -47,6 +48,21 @@ const responseDistribution = [
 export const ACReports = () => {
   const { acNumber } = useParams();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Prepare data for export
+  const exportData = {
+    boothPerformance,
+    surveyQuestions,
+    agentPerformance,
+    weeklyTrend,
+    responseDistribution,
+    voters: 1247,
+    families: 342,
+    surveys: 752,
+    booths: 5,
+    completion: 60.3,
+  };
 
   return (
     <DashboardLayout>
@@ -62,8 +78,9 @@ export const ACReports = () => {
             </div>
           </div>
           <ExportButton 
-            data={{ boothPerformance, surveyQuestions, agentPerformance, weeklyTrend }}
+            data={exportData}
             filename={`AC-${acNumber}-Report`}
+            acNumber={acNumber}
           />
         </div>
 

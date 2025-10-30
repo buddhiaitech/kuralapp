@@ -112,9 +112,16 @@ const AppSidebar = () => {
       <SidebarHeader className="border-b">
         <div className="flex items-center justify-between p-4">
           {!isCollapsed && (
-            <div className="flex-1">
-              <h1 className="text-xl font-bold text-primary">AC Dashboard</h1>
-              <p className="text-xs text-muted-foreground mt-1">Management System</p>
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold text-primary truncate">AC Dashboard</h1>
+              <p className="text-xs text-muted-foreground mt-1 truncate">Management System</p>
+            </div>
+          )}
+          {isCollapsed && (
+            <div className="flex justify-center w-full">
+              <div className="bg-primary rounded-md p-1.5">
+                <Home className="h-5 w-5 text-primary-foreground" />
+              </div>
             </div>
           )}
         </div>
@@ -130,9 +137,10 @@ const AppSidebar = () => {
                   onClick={() => navigate(item.path)}
                   isActive={isActive}
                   tooltip={item.label}
+                  className="transition-all duration-200 ease-in-out"
                 >
-                  <item.icon className="h-5 w-5" />
-                  <span>{item.label}</span>
+                  <item.icon className="h-5 w-5 sidebar-icon" />
+                  <span className="truncate">{item.label}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             );
@@ -142,18 +150,33 @@ const AppSidebar = () => {
 
       <SidebarFooter className="border-t">
         <div className="p-4 space-y-3">
-          {!isCollapsed && (
-            <div className="p-3 bg-accent rounded-lg">
-              <p className="text-sm font-medium truncate">{user?.name}</p>
-              <p className="text-xs text-muted-foreground">{roleLabels[user?.role || 'L0']}</p>
-              {user?.assignedAC && (
-                <p className="text-xs text-muted-foreground mt-1">AC {user.assignedAC}</p>
-              )}
-            </div>
-          )}
-          <SidebarMenuButton onClick={handleLogout} tooltip="Logout">
-            <LogOut className="h-4 w-4" />
-            <span>Logout</span>
+          {/* Always show user info and logout button with proper responsive handling */}
+          <div className={`p-3 bg-accent rounded-lg sidebar-user-info ${isCollapsed ? 'sidebar-collapsed' : ''}`}>
+            {!isCollapsed ? (
+              <>
+                <p className="text-sm font-medium truncate">{user?.name}</p>
+                <p className="text-xs text-muted-foreground truncate">{roleLabels[user?.role || 'L0']}</p>
+                {user?.assignedAC && (
+                  <p className="text-xs text-muted-foreground mt-1 truncate">AC {user.assignedAC}</p>
+                )}
+              </>
+            ) : (
+              // Show compact user info when sidebar is collapsed
+              <div className="flex flex-col items-center justify-center w-full">
+                <UserCircle className="h-5 w-5 mb-1 sidebar-icon flex-shrink-0" />
+                <span className="text-xs text-muted-foreground text-center truncate w-full">{user?.name?.charAt(0)}</span>
+              </div>
+            )}
+          </div>
+          
+          {/* Logout button with consistent icon sizing and responsive text */}
+          <SidebarMenuButton 
+            onClick={handleLogout} 
+            tooltip={!isCollapsed ? "Logout" : undefined}
+            className={`transition-all duration-200 ease-in-out logout-button ${isCollapsed ? 'justify-center h-10' : ''}`}
+          >
+            <LogOut className={`h-5 w-5 ${!isCollapsed ? 'mr-2 sidebar-icon' : 'sidebar-icon'} flex-shrink-0`} />
+            {!isCollapsed && <span>Logout</span>}
           </SidebarMenuButton>
         </div>
       </SidebarFooter>
@@ -175,7 +198,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <main className="flex-1 flex flex-col overflow-hidden">
               {/* Header with hamburger and notifications */}
               <header className="h-14 border-b bg-card flex items-center justify-between px-4 sticky top-0 z-10">
-                <SidebarTrigger className="hover:bg-accent">
+                <SidebarTrigger className="hover:bg-accent rounded-md p-1.5 h-8 w-8 flex items-center justify-center">
                   <Menu className="h-5 w-5" />
                 </SidebarTrigger>
                 <NotificationCenter />

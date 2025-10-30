@@ -4,8 +4,9 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Search, Trash2, Plus } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
 
 interface Form {
@@ -51,6 +52,21 @@ export const SurveyAssignments = () => {
   const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
   const [selectedForm, setSelectedForm] = useState<string>('');
   const [selectedAC, setSelectedAC] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [formFilter, setFormFilter] = useState<string>('all');
+  const [acFilter, setAcFilter] = useState<string>('all');
+
+  // Filter assignments based on search term, form filter, and AC filter
+  const filteredAssignments = assignments.filter(assignment => {
+    const matchesSearch = assignment.formName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         assignment.acName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         assignment.acNumber.toString().includes(searchTerm);
+    
+    const matchesForm = formFilter === 'all' || assignment.formName === mockForms.find(f => f.id === parseInt(formFilter))?.name;
+    const matchesAC = acFilter === 'all' || assignment.acNumber === parseInt(acFilter);
+    
+    return matchesSearch && matchesForm && matchesAC;
+  });
 
   const handleAssign = () => {
     if (selectedForm && selectedAC) {
@@ -58,6 +74,20 @@ export const SurveyAssignments = () => {
       const ac = mockACs.find(a => a.id.toString() === selectedAC);
       
       if (form && ac) {
+        // Check if assignment already exists
+        const existingAssignment = assignments.find(
+          a => a.formName === form.name && a.acNumber === ac.number
+        );
+        
+        if (existingAssignment) {
+          toast({
+            title: 'Assignment Already Exists',
+            description: `"${form.name}" is already assigned to AC ${ac.number} - ${ac.name}`,
+            variant: 'destructive'
+          });
+          return;
+        }
+        
         const newAssignment: Assignment = {
           id: Math.max(0, ...assignments.map(a => a.id)) + 1,
           formName: form.name,
@@ -144,7 +174,47 @@ export const SurveyAssignments = () => {
 
         <Card>
           <div className="p-6">
-            <h2 className="text-xl font-semibold mb-4">Current Assignments</h2>
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+              <h2 className="text-xl font-semibold">Current Assignments</h2>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search assignments..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="pl-10 w-full sm:w-64"
+                  />
+                </div>
+                <Select value={formFilter} onValueChange={setFormFilter}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Filter by Form" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Forms</SelectItem>
+                    {mockForms.map((form) => (
+                      <SelectItem key={form.id} value={form.id.toString()}>
+                        {form.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Select value={acFilter} onValueChange={setAcFilter}>
+                  <SelectTrigger className="w-full sm:w-48">
+                    <SelectValue placeholder="Filter by AC" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All ACs</SelectItem>
+                    {mockACs.map((ac) => (
+                      <SelectItem key={ac.id} value={ac.number.toString()}>
+                        {ac.number} - {ac.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
             <Table>
               <TableHeader>
                 <TableRow>
@@ -155,27 +225,35 @@ export const SurveyAssignments = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {assignments.map((assignment) => (
-                  <TableRow key={assignment.id}>
-                    <TableCell className="font-medium">{assignment.formName}</TableCell>
-                    <TableCell>{assignment.acNumber} - {assignment.acName}</TableCell>
-                    <TableCell>{assignment.dateAssigned}</TableCell>
-                    <TableCell className="text-right">
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => handleDeleteAssignment(
-                          assignment.id, 
-                          assignment.formName, 
-                          assignment.acNumber, 
-                          assignment.acName
-                        )}
-                      >
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      </Button>
+                {filteredAssignments.length > 0 ? (
+                  filteredAssignments.map((assignment) => (
+                    <TableRow key={assignment.id}>
+                      <TableCell className="font-medium">{assignment.formName}</TableCell>
+                      <TableCell>{assignment.acNumber} - {assignment.acName}</TableCell>
+                      <TableCell>{assignment.dateAssigned}</TableCell>
+                      <TableCell className="text-right">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDeleteAssignment(
+                            assignment.id, 
+                            assignment.formName, 
+                            assignment.acNumber, 
+                            assignment.acName
+                          )}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={4} className="text-center text-muted-foreground py-8">
+                      No assignments found matching your criteria
                     </TableCell>
                   </TableRow>
-                ))}
+                )}
               </TableBody>
             </Table>
           </div>

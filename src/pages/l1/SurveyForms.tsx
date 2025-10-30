@@ -15,10 +15,103 @@ interface SurveyForm {
   created: string;
 }
 
+interface FormData {
+  id: number;
+  title: string;
+  description: string;
+  questions: any[];
+  assignedACs: number[];
+}
+
 const initialForms: SurveyForm[] = [
   { id: 1, name: 'Voter Intake Form 2025', questions: 4, assignedACs: 5, status: 'Active', created: '2024-01-15' },
   { id: 2, name: 'Local Issues Survey', questions: 3, assignedACs: 12, status: 'Active', created: '2024-02-01' },
   { id: 3, name: 'Post-Election Feedback', questions: 2, assignedACs: 0, status: 'Draft', created: '2024-03-10' },
+];
+
+// Mock form data for preview
+const mockFormData: FormData[] = [
+  {
+    id: 1,
+    title: 'Voter Intake Form 2025',
+    description: 'Collect voter information and preferences for the upcoming election',
+    questions: [
+      {
+        id: '1',
+        text: 'What is your full name?',
+        type: 'short-text',
+        required: true
+      },
+      {
+        id: '2',
+        text: 'What is your age?',
+        type: 'number',
+        required: true
+      },
+      {
+        id: '3',
+        text: 'Which party will you vote for?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Party A', 'Party B', 'Party C', 'Undecided']
+      },
+      {
+        id: '4',
+        text: 'What are the main issues in your area?',
+        type: 'paragraph',
+        required: false
+      }
+    ],
+    assignedACs: [118, 119, 120, 121, 122]
+  },
+  {
+    id: 2,
+    title: 'Local Issues Survey',
+    description: 'Identify and prioritize local issues in your constituency',
+    questions: [
+      {
+        id: '1',
+        text: 'What is the most pressing issue in your area?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Infrastructure', 'Healthcare', 'Education', 'Employment', 'Water Supply', 'Other']
+      },
+      {
+        id: '2',
+        text: 'How would you rate the current government performance?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Excellent', 'Good', 'Average', 'Poor', 'Very Poor']
+      },
+      {
+        id: '3',
+        text: 'Any additional comments or suggestions?',
+        type: 'paragraph',
+        required: false
+      }
+    ],
+    assignedACs: [118, 119, 120, 121, 122, 123, 124, 125, 126, 127, 128, 129]
+  },
+  {
+    id: 3,
+    title: 'Post-Election Feedback',
+    description: 'Gather feedback after the election to improve future campaigns',
+    questions: [
+      {
+        id: '1',
+        text: 'Did the campaign address your concerns?',
+        type: 'yes-no',
+        required: true
+      },
+      {
+        id: '2',
+        text: 'What could have been done better?',
+        type: 'paragraph',
+        required: false
+      }
+    ],
+    assignedACs: []
+  }
 ];
 
 // In a real app, this would be stored in a proper state management solution
@@ -44,6 +137,14 @@ const getFormData = (formId: number) => {
   }
 };
 
+// Initialize mock form data in localStorage
+const initializeMockFormData = () => {
+  const stored = localStorage.getItem('surveyFormsDataL1');
+  if (!stored) {
+    localStorage.setItem('surveyFormsDataL1', JSON.stringify(mockFormData));
+  }
+};
+
 export const SurveyForms = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -52,6 +153,9 @@ export const SurveyForms = () => {
   useEffect(() => {
     // Update localStorage whenever forms change
     storeForms(forms);
+    
+    // Initialize mock form data for preview
+    initializeMockFormData();
   }, [forms]);
 
   const handleCreateNewForm = () => {

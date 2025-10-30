@@ -7,6 +7,8 @@ import { Badge } from '@/components/ui/badge';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Search, ArrowLeft, UserPlus, Filter } from 'lucide-react';
 import { useState } from 'react';
+import { VoterDetailDrawer } from '@/components/VoterDetailDrawer';
+import { AddVoterDialog } from '@/components/AddVoterDialog';
 
 const mockVoters = [
   { id: 1, name: 'Rajesh Kumar', age: 42, gender: 'Male', booth: 'B-101', family: 'F-234', phone: '+91 98765 43210', surveyed: true },
@@ -21,13 +23,26 @@ export const ACVoterManager = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [boothFilter, setBoothFilter] = useState('all');
+  const [voters, setVoters] = useState(mockVoters);
+  const [selectedVoter, setSelectedVoter] = useState<any>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const filteredVoters = mockVoters.filter(voter => {
+  const filteredVoters = voters.filter(voter => {
     const matchesSearch = voter.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          voter.phone.includes(searchTerm);
     const matchesBooth = boothFilter === 'all' || voter.booth === boothFilter;
     return matchesSearch && matchesBooth;
   });
+
+  const handleViewDetails = (voter: any) => {
+    setSelectedVoter(voter);
+    setIsDrawerOpen(true);
+  };
+
+  const handleAddVoter = (newVoter: any) => {
+    setVoters(prev => [...prev, newVoter]);
+  };
 
   return (
     <DashboardLayout>
@@ -42,7 +57,7 @@ export const ACVoterManager = () => {
               <p className="text-muted-foreground">AC {acNumber} - Manage voter records</p>
             </div>
           </div>
-          <Button className="gap-2">
+          <Button className="gap-2" onClick={() => setIsDialogOpen(true)}>
             <UserPlus className="h-4 w-4" />
             Add Voter
           </Button>
@@ -103,7 +118,7 @@ export const ACVoterManager = () => {
                       </Badge>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      <Button variant="outline" size="sm">View Details</Button>
+                      <Button variant="outline" size="sm" onClick={() => handleViewDetails(voter)}>View Details</Button>
                     </td>
                   </tr>
                 ))}
@@ -112,6 +127,18 @@ export const ACVoterManager = () => {
           </div>
         </Card>
       </div>
+
+      <VoterDetailDrawer 
+        open={isDrawerOpen} 
+        onClose={() => setIsDrawerOpen(false)} 
+        voterData={selectedVoter} 
+      />
+
+      <AddVoterDialog 
+        open={isDialogOpen} 
+        onClose={() => setIsDialogOpen(false)} 
+        onAddVoter={handleAddVoter} 
+      />
     </DashboardLayout>
   );
 };

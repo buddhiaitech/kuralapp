@@ -15,6 +15,14 @@ interface SurveyForm {
   assignedACs: number[];
 }
 
+interface FormData {
+  id: string;
+  title: string;
+  description: string;
+  questions: any[];
+  assignedACs: number[];
+}
+
 const initialForms: SurveyForm[] = [
   { 
     id: '1', 
@@ -37,6 +45,196 @@ const initialForms: SurveyForm[] = [
     questions: 5,
     assignedACs: [118, 119, 120, 121, 122] // Assign to multiple ACs for better visibility
   },
+];
+
+// Mock form data for preview
+const mockFormData: FormData[] = [
+  {
+    id: '1',
+    title: 'Voter Intake Form 2025',
+    description: 'Collect comprehensive voter information and preferences',
+    questions: [
+      {
+        id: '1',
+        text: 'What is your full name?',
+        type: 'short-text',
+        required: true
+      },
+      {
+        id: '2',
+        text: 'What is your age?',
+        type: 'number',
+        required: true
+      },
+      {
+        id: '3',
+        text: 'What is your gender?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Male', 'Female', 'Other', 'Prefer not to say']
+      },
+      {
+        id: '4',
+        text: 'What is your occupation?',
+        type: 'short-text',
+        required: false
+      },
+      {
+        id: '5',
+        text: 'How long have you lived in this area?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Less than 1 year', '1-5 years', '5-10 years', 'More than 10 years']
+      },
+      {
+        id: '6',
+        text: 'Which party will you vote for?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Party A', 'Party B', 'Party C', 'Undecided']
+      },
+      {
+        id: '7',
+        text: 'What are the main issues in your area?',
+        type: 'checkboxes',
+        required: true,
+        options: ['Infrastructure', 'Healthcare', 'Education', 'Employment', 'Water Supply', 'Electricity', 'Security', 'Other']
+      },
+      {
+        id: '8',
+        text: 'Rate the current government performance',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Excellent', 'Good', 'Average', 'Poor', 'Very Poor']
+      },
+      {
+        id: '9',
+        text: 'What improvements would you like to see?',
+        type: 'paragraph',
+        required: false
+      },
+      {
+        id: '10',
+        text: 'Would you be willing to volunteer for campaign activities?',
+        type: 'yes-no',
+        required: false
+      },
+      {
+        id: '11',
+        text: 'Preferred method of communication',
+        type: 'checkboxes',
+        required: false,
+        options: ['Phone', 'Email', 'SMS', 'Social Media', 'Door-to-door']
+      },
+      {
+        id: '12',
+        text: 'Any additional comments?',
+        type: 'paragraph',
+        required: false
+      }
+    ],
+    assignedACs: [118, 119, 120]
+  },
+  {
+    id: '2',
+    title: 'Local Issues Survey',
+    description: 'Identify and prioritize local issues in your constituency',
+    questions: [
+      {
+        id: '1',
+        text: 'What is the most pressing issue in your area?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Infrastructure', 'Healthcare', 'Education', 'Employment', 'Water Supply', 'Electricity', 'Security', 'Other']
+      },
+      {
+        id: '2',
+        text: 'How would you rate the current government performance?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Excellent', 'Good', 'Average', 'Poor', 'Very Poor']
+      },
+      {
+        id: '3',
+        text: 'What specific improvements would you like to see in infrastructure?',
+        type: 'paragraph',
+        required: false
+      },
+      {
+        id: '4',
+        text: 'Are you satisfied with local healthcare facilities?',
+        type: 'yes-no',
+        required: true
+      },
+      {
+        id: '5',
+        text: 'What are your top 3 priorities for the upcoming budget?',
+        type: 'checkboxes',
+        required: true,
+        options: ['Roads and Transportation', 'Healthcare', 'Education', 'Water Supply', 'Electricity', 'Employment', 'Security', 'Environment']
+      },
+      {
+        id: '6',
+        text: 'Any additional comments or suggestions?',
+        type: 'paragraph',
+        required: false
+      },
+      {
+        id: '7',
+        text: 'Would you be willing to participate in community development activities?',
+        type: 'yes-no',
+        required: false
+      },
+      {
+        id: '8',
+        text: 'How often do you interact with local government representatives?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Regularly', 'Occasionally', 'Rarely', 'Never']
+      }
+    ],
+    assignedACs: [118, 120, 121]
+  },
+  {
+    id: '3',
+    title: 'Feedback Collection Form',
+    description: 'Gather feedback on various government initiatives and services',
+    questions: [
+      {
+        id: '1',
+        text: 'How satisfied are you with the Public Distribution System (PDS)?',
+        type: 'multiple-choice',
+        required: true,
+        options: ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied', 'Very Dissatisfied']
+      },
+      {
+        id: '2',
+        text: 'Have you faced any issues with government services in the past month?',
+        type: 'yes-no',
+        required: true
+      },
+      {
+        id: '3',
+        text: 'If yes, please describe the issue and how it was resolved',
+        type: 'paragraph',
+        required: false
+      },
+      {
+        id: '4',
+        text: 'Which government schemes have you benefited from?',
+        type: 'checkboxes',
+        required: false,
+        options: ['MGNREGA', 'PMAY', 'Ayushman Bharat', 'PM-KISAN', 'Other Schemes', 'None']
+      },
+      {
+        id: '5',
+        text: 'How can we improve the delivery of government services?',
+        type: 'paragraph',
+        required: false
+      }
+    ],
+    assignedACs: [118, 119, 120, 121, 122]
+  }
 ];
 
 // In a real app, this would be stored in a proper state management solution
@@ -74,6 +272,14 @@ const getFormData = (formId: string) => {
   }
 };
 
+// Initialize mock form data in localStorage
+const initializeMockFormData = () => {
+  const stored = localStorage.getItem('surveyFormsDataL2');
+  if (!stored) {
+    localStorage.setItem('surveyFormsDataL2', JSON.stringify(mockFormData));
+  }
+};
+
 export const SurveyForms = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -83,6 +289,9 @@ export const SurveyForms = () => {
   useEffect(() => {
     // Update localStorage whenever forms change
     storeForms(forms);
+    
+    // Initialize mock form data for preview
+    initializeMockFormData();
   }, [forms]);
   
   // Filter forms assigned to this moderator's AC
