@@ -13,6 +13,9 @@ const liveSurveys = [
   { id: 5, voter: 'Suresh Babu', booth: 'Booth 1', ac: '118 - Thondamuthur', agent: 'Rajesh Kumar', timestamp: '15 mins ago', question: 'What is your primary concern?', answer: 'Employment' },
 ];
 
+// Get unique questions for filter options
+const uniqueQuestions = Array.from(new Set(liveSurveys.map(survey => survey.question)));
+
 export const LiveSurveyMonitor = () => {
   const [acFilter, setAcFilter] = useState<string>('all');
   const [questionFilter, setQuestionFilter] = useState<string>('all');
@@ -22,6 +25,9 @@ export const LiveSurveyMonitor = () => {
   // Get unique booths for filter options
   const uniqueBooths = Array.from(new Set(liveSurveys.map(survey => survey.booth)));
 
+  // Get unique ACs for filter options
+  const uniqueACs = Array.from(new Set(liveSurveys.map(survey => survey.ac)));
+
   // Filter surveys based on selected filters and search term
   const filteredSurveys = liveSurveys.filter(survey => {
     // Search filter
@@ -30,14 +36,10 @@ export const LiveSurveyMonitor = () => {
                          survey.answer.toLowerCase().includes(searchTerm.toLowerCase());
     
     // AC filter
-    const matchesAC = acFilter === 'all' || survey.ac.includes(acFilter);
+    const matchesAC = acFilter === 'all' || survey.ac === acFilter;
     
     // Question filter
-    const matchesQuestion = questionFilter === 'all' || survey.question.includes(
-      questionFilter === 'q1' ? 'Which party will you vote for?' :
-      questionFilter === 'q2' ? 'What is your primary concern?' :
-      questionFilter === 'q3' ? 'Rate government performance' : ''
-    );
+    const matchesQuestion = questionFilter === 'all' || survey.question === questionFilter;
     
     // Booth filter
     const matchesBooth = boothFilter === 'all' || survey.booth === boothFilter;
@@ -73,9 +75,9 @@ export const LiveSurveyMonitor = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All ACs</SelectItem>
-                <SelectItem value="118">118 - Thondamuthur</SelectItem>
-                <SelectItem value="119">119 - Coimbatore North</SelectItem>
-                <SelectItem value="120">120 - Coimbatore South</SelectItem>
+                {uniqueACs.map(ac => (
+                  <SelectItem key={ac} value={ac}>{ac}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Select value={boothFilter} onValueChange={setBoothFilter}>
@@ -95,9 +97,9 @@ export const LiveSurveyMonitor = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Questions</SelectItem>
-                <SelectItem value="q1">Which party will you vote for?</SelectItem>
-                <SelectItem value="q2">What is your primary concern?</SelectItem>
-                <SelectItem value="q3">Rate government performance</SelectItem>
+                {uniqueQuestions.map((question, index) => (
+                  <SelectItem key={index} value={question}>{question}</SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
