@@ -21,6 +21,14 @@ import {
   TrendingUp,
   ScrollText,
   Menu,
+  Map,
+  Target,
+  DollarSign,
+  Share2,
+  Shield,
+  MessageSquare,
+  Vote,
+  Award,
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Separator } from './ui/separator';
@@ -101,7 +109,18 @@ const AppSidebar = () => {
         ];
       case 'L9':
         return [
-          { icon: Activity, label: 'War Room', path: '/l9/war-room' },
+          { icon: LayoutDashboard, label: 'War Room Overview', path: '/l9/war-room' },
+          { icon: Map, label: 'Geographic Intelligence', path: '/l9/geographic' },
+          { icon: TrendingUp, label: 'Predictive Analytics', path: '/l9/predictive' },
+          { icon: Target, label: 'Micro-Targeting', path: '/l9/micro-targeting' },
+          { icon: DollarSign, label: 'Financial Intelligence', path: '/l9/financial' },
+          { icon: Share2, label: 'Digital Analytics', path: '/l9/digital' },
+          { icon: Users, label: 'Team Management', path: '/l9/team' },
+          { icon: Shield, label: 'Opposition Intelligence', path: '/l9/opposition' },
+          { icon: MessageSquare, label: 'Communication Analytics', path: '/l9/communication' },
+          { icon: Vote, label: 'Election Day Ops', path: '/l9/election-day' },
+          { icon: FileText, label: 'Survey Intelligence', path: '/l9/surveys' },
+          { icon: Award, label: 'Success Metrics', path: '/l9/success' },
         ];
       default:
         return [];

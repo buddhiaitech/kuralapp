@@ -41,6 +41,17 @@ import { Reports } from "@/pages/l2/Reports";
 import { SurveyForms as L2SurveyForms } from "@/pages/l2/SurveyForms";
 import { FormPreview } from "@/pages/shared/FormPreview";
 import { WarRoom } from "@/pages/l9/WarRoom";
+import GeographicIntelligence from "@/pages/l9/GeographicIntelligence";
+import PredictiveAnalytics from "@/pages/l9/PredictiveAnalytics";
+import MicroTargeting from "@/pages/l9/MicroTargeting";
+import FinancialIntelligence from "@/pages/l9/FinancialIntelligence";
+import DigitalAnalytics from "@/pages/l9/DigitalAnalytics";
+import TeamManagement from "@/pages/l9/TeamManagement";
+import OppositionIntelligence from "@/pages/l9/OppositionIntelligence";
+import CommunicationAnalytics from "@/pages/l9/CommunicationAnalytics";
+import ElectionDayOps from "@/pages/l9/ElectionDayOps";
+import SurveyIntelligence from "@/pages/l9/SurveyIntelligence";
+import SuccessMetrics from "@/pages/l9/SuccessMetrics";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -134,8 +145,19 @@ const AppRoutes = () => {
       <Route path="/l2/reports" element={<ProtectedRoute allowedRoles={['L2']}><Reports /></ProtectedRoute>} />
       <Route path="/l2/activity-logs" element={<ProtectedRoute allowedRoles={['L2']}><L2ActivityLogs /></ProtectedRoute>} />
       
-      {/* L9 War Room Route */}
+      {/* L9 War Room Routes */}
       <Route path="/l9/war-room" element={<ProtectedRoute allowedRoles={['L9']}><WarRoom /></ProtectedRoute>} />
+      <Route path="/l9/geographic" element={<ProtectedRoute allowedRoles={['L9']}><GeographicIntelligence /></ProtectedRoute>} />
+      <Route path="/l9/predictive" element={<ProtectedRoute allowedRoles={['L9']}><PredictiveAnalytics /></ProtectedRoute>} />
+      <Route path="/l9/micro-targeting" element={<ProtectedRoute allowedRoles={['L9']}><MicroTargeting /></ProtectedRoute>} />
+      <Route path="/l9/financial" element={<ProtectedRoute allowedRoles={['L9']}><FinancialIntelligence /></ProtectedRoute>} />
+      <Route path="/l9/digital" element={<ProtectedRoute allowedRoles={['L9']}><DigitalAnalytics /></ProtectedRoute>} />
+      <Route path="/l9/team" element={<ProtectedRoute allowedRoles={['L9']}><TeamManagement /></ProtectedRoute>} />
+      <Route path="/l9/opposition" element={<ProtectedRoute allowedRoles={['L9']}><OppositionIntelligence /></ProtectedRoute>} />
+      <Route path="/l9/communication" element={<ProtectedRoute allowedRoles={['L9']}><CommunicationAnalytics /></ProtectedRoute>} />
+      <Route path="/l9/election-day" element={<ProtectedRoute allowedRoles={['L9']}><ElectionDayOps /></ProtectedRoute>} />
+      <Route path="/l9/surveys" element={<ProtectedRoute allowedRoles={['L9']}><SurveyIntelligence /></ProtectedRoute>} />
+      <Route path="/l9/success" element={<ProtectedRoute allowedRoles={['L9']}><SuccessMetrics /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
