@@ -18,7 +18,7 @@ interface PredictionData {
 
 const mockPredictions: PredictionData[] = [
   {
-    acNumber: 118,
+    acNumber: 101,
     currentCompletion: 12.5,
     projected7Days: 16.2,
     projected14Days: 21.8,
@@ -30,7 +30,7 @@ const mockPredictions: PredictionData[] = [
     velocity: 0.54,
   },
   {
-    acNumber: 119,
+    acNumber: 102,
     currentCompletion: 8.2,
     projected7Days: 10.5,
     projected14Days: 14.2,
@@ -42,7 +42,7 @@ const mockPredictions: PredictionData[] = [
     velocity: 0.33,
   },
   {
-    acNumber: 120,
+    acNumber: 118,
     currentCompletion: 18.7,
     projected7Days: 24.1,
     projected14Days: 32.5,

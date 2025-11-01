@@ -25,8 +25,8 @@ const averageData = {
 
 // Mock best performing AC
 const bestPerformingAC = {
-  acNumber: '126',
-  name: 'Tirupur North',
+  acNumber: '113',
+  name: 'Tiruppur North',
   voters: 2456,
   families: 689,
   surveys: 478,
@@ -82,7 +82,7 @@ export const ComparisonMetrics = ({ currentAC }: ComparisonMetricsProps) => {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">vs. AC Average</h3>
-          <Badge variant="secondary">All 21 ACs</Badge>
+          <Badge variant="secondary">All 26 ACs</Badge>
         </div>
         <div className="space-y-4">
           <div className="flex items-center justify-between p-3 bg-muted rounded-lg">

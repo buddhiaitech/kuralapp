@@ -71,12 +71,12 @@ const generateMockNotifications = (userId: string, userRole: string): Notificati
         id: 'n4',
         type: 'success',
         title: 'Survey Milestone Reached',
-        message: 'AC 118 has completed 200 surveys - 15% completion!',
+        message: 'AC 101 has completed 200 surveys - 15% completion!',
         timestamp: new Date(now.getTime() - 10 * 60000),
         read: false,
         userId,
-        actionUrl: '/l1/ac/118',
-        metadata: { acNumber: 118, completion: 15 }
+        actionUrl: '/l1/ac/101',
+        metadata: { acNumber: 101, completion: 15 }
       },
       {
         id: 'n5',

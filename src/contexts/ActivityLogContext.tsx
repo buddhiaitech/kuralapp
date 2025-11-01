@@ -48,15 +48,15 @@ const generateMockActivities = (): ActivityLog[] => {
   ];
 
   const actions: { action: ActivityAction; entityType: EntityType; details: string; acNumber?: number }[] = [
-    { action: 'create', entityType: 'voter', details: 'Created new voter Rajesh Kumar', acNumber: 118 },
+    { action: 'create', entityType: 'voter', details: 'Created new voter Rajesh Kumar', acNumber: 101 },
     { action: 'update', entityType: 'family', details: 'Updated family details for Singh household', acNumber: 118 },
-    { action: 'create', entityType: 'survey', details: 'Completed survey for Booth 12', acNumber: 118 },
-    { action: 'assign', entityType: 'agent', details: 'Assigned agent to Booth 8', acNumber: 119 },
+    { action: 'create', entityType: 'survey', details: 'Completed survey for Booth 12', acNumber: 119 },
+    { action: 'assign', entityType: 'agent', details: 'Assigned agent to Booth 8', acNumber: 121 },
     { action: 'export', entityType: 'voter', details: 'Exported voter data to CSV' },
     { action: 'view', entityType: 'booth', details: 'Viewed booth statistics', acNumber: 118 },
-    { action: 'delete', entityType: 'survey', details: 'Deleted invalid survey entry', acNumber: 119 },
+    { action: 'delete', entityType: 'survey', details: 'Deleted invalid survey entry', acNumber: 102 },
     { action: 'create', entityType: 'admin', details: 'Created new ACIM account' },
-    { action: 'update', entityType: 'booth', details: 'Updated booth status to Active', acNumber: 118 },
+    { action: 'update', entityType: 'booth', details: 'Updated booth status to Active', acNumber: 123 },
     { action: 'login', entityType: 'voter', details: 'User logged in successfully' },
   ];
 

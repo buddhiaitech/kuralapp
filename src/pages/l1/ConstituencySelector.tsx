@@ -5,29 +5,29 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MapPin, Search } from 'lucide-react';
 
-// Mock data for 21 constituencies
+// Mock data for 26 constituencies (101-126)
 const constituencies = [
-  { number: 118, name: 'Thondamuthur' },
-  { number: 119, name: 'Coimbatore North' },
+  { number: 101, name: 'Dharapuram (SC)' },
+  { number: 102, name: 'Kangayam' },
+  { number: 108, name: 'Udhagamandalam' },
+  { number: 109, name: 'Gudalur (SC)' },
+  { number: 110, name: 'Coonoor' },
+  { number: 111, name: 'Mettupalayam' },
+  { number: 112, name: 'Avanashi (SC)' },
+  { number: 113, name: 'Tiruppur North' },
+  { number: 114, name: 'Tiruppur South' },
+  { number: 115, name: 'Palladam' },
+  { number: 116, name: 'Sulur' },
+  { number: 117, name: 'Kavundampalayam' },
+  { number: 118, name: 'Coimbatore North' },
+  { number: 119, name: 'Thondamuthur' },
   { number: 120, name: 'Coimbatore South' },
   { number: 121, name: 'Singanallur' },
-  { number: 122, name: 'Sulur' },
-  { number: 123, name: 'Kavundampalayam' },
-  { number: 124, name: 'Kaundampalayam' },
-  { number: 125, name: 'Kinathukadavu' },
-  { number: 126, name: 'Pollachi' },
-  { number: 127, name: 'Valparai' },
-  { number: 128, name: 'Udumalaipettai' },
-  { number: 129, name: 'Madathukulam' },
-  { number: 130, name: 'Palladam' },
-  { number: 131, name: 'Tiruppur North' },
-  { number: 132, name: 'Tiruppur South' },
-  { number: 133, name: 'Dharapuram' },
-  { number: 134, name: 'Kangeyam' },
-  { number: 135, name: 'Perundurai' },
-  { number: 136, name: 'Bhavani' },
-  { number: 137, name: 'Anthiyur' },
-  { number: 138, name: 'Gobichettipalayam' },
+  { number: 122, name: 'Kinathukadavu' },
+  { number: 123, name: 'Pollachi' },
+  { number: 124, name: 'Valparai (SC)' },
+  { number: 125, name: 'Udumalaipettai' },
+  { number: 126, name: 'Madathukulam' },
 ];
 
 export const ConstituencySelector = () => {

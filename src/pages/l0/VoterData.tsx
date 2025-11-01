@@ -101,7 +101,7 @@ export const VoterData = () => {
     
     // Generate dummy data
     const genders = ['Male', 'Female', 'Other'];
-    const acNumbers = Array.from({length: 21}, (_, i) => 118 + i); // AC 118-138
+    const acNumbers = [101, 102, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124, 125, 126]; // AC 101-126
     
     for (let i = 1; i <= 100; i++) {
       const acNumber = acNumbers[Math.floor(Math.random() * acNumbers.length)];
@@ -118,7 +118,7 @@ export const VoterData = () => {
       <div className="space-y-8">
         <div>
           <h1 className="text-4xl font-bold mb-2">Voter Data Management</h1>
-          <p className="text-muted-foreground">Import and export voter data for all 21 Assembly Constituencies</p>
+          <p className="text-muted-foreground">Import and export voter data for all 26 Assembly Constituencies</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

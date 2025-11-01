@@ -13,16 +13,33 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-// Mock data for all ACs
+// Mock data for all ACs (101-126)
 const allACsData = [
-  { acNumber: '118', name: 'Thondamuthur', voters: 1247, families: 342, surveys: 156, booths: 89, completion: 78, agentCount: 12 },
-  { acNumber: '119', name: 'Coimbatore North', voters: 2340, families: 678, surveys: 423, booths: 112, completion: 85, agentCount: 18 },
+  { acNumber: '101', name: 'Dharapuram (SC)', voters: 2134, families: 589, surveys: 389, booths: 106, completion: 82, agentCount: 16 },
+  { acNumber: '102', name: 'Kangayam', voters: 1845, families: 489, surveys: 256, booths: 87, completion: 66, agentCount: 14 },
+  { acNumber: '108', name: 'Udhagamandalam', voters: 1678, families: 434, surveys: 223, booths: 79, completion: 67, agentCount: 13 },
+  { acNumber: '109', name: 'Gudalur (SC)', voters: 1234, families: 298, surveys: 134, booths: 65, completion: 58, agentCount: 10 },
+  { acNumber: '110', name: 'Coonoor', voters: 1890, families: 501, surveys: 278, booths: 91, completion: 71, agentCount: 14 },
+  { acNumber: '111', name: 'Mettupalayam', voters: 2023, families: 556, surveys: 334, booths: 101, completion: 77, agentCount: 15 },
+  { acNumber: '112', name: 'Avanashi (SC)', voters: 1756, families: 467, surveys: 245, booths: 84, completion: 69, agentCount: 13 },
+  { acNumber: '113', name: 'Tiruppur North', voters: 2456, families: 689, surveys: 478, booths: 123, completion: 92, agentCount: 19 },
+  { acNumber: '114', name: 'Tiruppur South', voters: 2189, families: 601, surveys: 401, booths: 109, completion: 84, agentCount: 17 },
+  { acNumber: '115', name: 'Palladam', voters: 1823, families: 478, surveys: 267, booths: 88, completion: 70, agentCount: 14 },
+  { acNumber: '116', name: 'Sulur', voters: 1678, families: 445, surveys: 234, booths: 82, completion: 65, agentCount: 12 },
+  { acNumber: '117', name: 'Kavundampalayam', voters: 1956, families: 521, surveys: 312, booths: 97, completion: 73, agentCount: 15 },
+  { acNumber: '118', name: 'Coimbatore North', voters: 2340, families: 678, surveys: 423, booths: 112, completion: 85, agentCount: 18 },
+  { acNumber: '119', name: 'Thondamuthur', voters: 1247, families: 342, surveys: 156, booths: 89, completion: 78, agentCount: 12 },
   { acNumber: '120', name: 'Coimbatore South', voters: 1890, families: 534, surveys: 289, booths: 95, completion: 72, agentCount: 15 },
   { acNumber: '121', name: 'Singanallur', voters: 2145, families: 598, surveys: 387, booths: 108, completion: 91, agentCount: 17 },
+  { acNumber: '122', name: 'Kinathukadavu', voters: 1678, families: 434, surveys: 223, booths: 79, completion: 67, agentCount: 13 },
+  { acNumber: '123', name: 'Pollachi', voters: 2378, families: 645, surveys: 456, booths: 118, completion: 89, agentCount: 18 },
+  { acNumber: '124', name: 'Valparai (SC)', voters: 1234, families: 298, surveys: 134, booths: 65, completion: 58, agentCount: 10 },
+  { acNumber: '125', name: 'Udumalaipettai', voters: 1945, families: 534, surveys: 298, booths: 93, completion: 75, agentCount: 15 },
+  { acNumber: '126', name: 'Madathukulam', voters: 1567, families: 412, surveys: 189, booths: 71, completion: 62, agentCount: 11 },
 ];
 
 export const ACComparison = () => {
-  const [selectedACs, setSelectedACs] = useState<string[]>(['118', '119']);
+  const [selectedACs, setSelectedACs] = useState<string[]>(['101', '102']);
 
   const handleACSelection = (index: number, value: string) => {
     const newSelection = [...selectedACs];
@@ -32,7 +49,7 @@ export const ACComparison = () => {
 
   const addComparison = () => {
     if (selectedACs.length < 4) {
-      setSelectedACs([...selectedACs, '120']);
+      setSelectedACs([...selectedACs, '108']);
     }
   };
 

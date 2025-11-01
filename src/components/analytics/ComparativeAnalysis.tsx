@@ -32,22 +32,22 @@ interface ComparisonData {
 
 const mockComparisons: ComparisonData[] = [
   {
-    acNumber: 118,
-    name: 'Central District',
+    acNumber: 101,
+    name: 'Dharapuram (SC)',
     currentPeriod: { surveys: 1245, completion: 12.5, agents: 8 },
     previousPeriod: { surveys: 980, completion: 10.2, agents: 8 },
     growth: { surveys: 27.0, completion: 2.3, trend: 'up' },
   },
   {
-    acNumber: 119,
-    name: 'North Area',
+    acNumber: 102,
+    name: 'Kangayam',
     currentPeriod: { surveys: 825, completion: 8.2, agents: 6 },
     previousPeriod: { surveys: 920, completion: 9.1, agents: 7 },
     growth: { surveys: -10.3, completion: -0.9, trend: 'down' },
   },
   {
-    acNumber: 120,
-    name: 'South Zone',
+    acNumber: 118,
+    name: 'Coimbatore North',
     currentPeriod: { surveys: 1870, completion: 18.7, agents: 10 },
     previousPeriod: { surveys: 1840, completion: 18.4, agents: 10 },
     growth: { surveys: 1.6, completion: 0.3, trend: 'stable' },

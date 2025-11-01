@@ -14,14 +14,27 @@ import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 const acPerformance = [
-  { ac: '118 - Thondamuthur', acNumber: 118, voters: 1247, completion: 12.5, admins: 2, moderators: 5, agents: 12 },
-  { ac: '119 - Coimbatore North', acNumber: 119, voters: 2340, completion: 18.1, admins: 1, moderators: 8, agents: 18 },
-  { ac: '120 - Coimbatore South', acNumber: 120, voters: 1890, completion: 15.3, admins: 2, moderators: 6, agents: 15 },
-  { ac: '121 - Singanallur', acNumber: 121, voters: 1678, completion: 8.2, admins: 1, moderators: 4, agents: 10 },
-  { ac: '122 - Sulur', acNumber: 122, voters: 1534, completion: 14.7, admins: 2, moderators: 7, agents: 14 },
-  { ac: '123 - Kavundampalayam', acNumber: 123, voters: 2156, completion: 16.8, admins: 2, moderators: 8, agents: 16 },
-  { ac: '124 - Kaundampalayam', acNumber: 124, voters: 1423, completion: 11.2, admins: 1, moderators: 5, agents: 11 },
-  { ac: '125 - Kinathukadavu', acNumber: 125, voters: 1789, completion: 13.4, admins: 1, moderators: 6, agents: 13 },
+  { ac: '101 - Dharapuram (SC)', acNumber: 101, voters: 2134, completion: 16.5, admins: 2, moderators: 6, agents: 16 },
+  { ac: '102 - Kangayam', acNumber: 102, voters: 1845, completion: 13.2, admins: 1, moderators: 5, agents: 14 },
+  { ac: '108 - Udhagamandalam', acNumber: 108, voters: 1678, completion: 12.8, admins: 1, moderators: 4, agents: 13 },
+  { ac: '109 - Gudalur (SC)', acNumber: 109, voters: 1234, completion: 10.5, admins: 1, moderators: 3, agents: 10 },
+  { ac: '110 - Coonoor', acNumber: 110, voters: 1890, completion: 14.2, admins: 2, moderators: 5, agents: 14 },
+  { ac: '111 - Mettupalayam', acNumber: 111, voters: 2023, completion: 15.4, admins: 2, moderators: 6, agents: 15 },
+  { ac: '112 - Avanashi (SC)', acNumber: 112, voters: 1756, completion: 13.8, admins: 1, moderators: 5, agents: 13 },
+  { ac: '113 - Tiruppur North', acNumber: 113, voters: 2456, completion: 18.4, admins: 2, moderators: 8, agents: 19 },
+  { ac: '114 - Tiruppur South', acNumber: 114, voters: 2189, completion: 16.8, admins: 2, moderators: 7, agents: 17 },
+  { ac: '115 - Palladam', acNumber: 115, voters: 1823, completion: 14.0, admins: 2, moderators: 6, agents: 14 },
+  { ac: '116 - Sulur', acNumber: 116, voters: 1678, completion: 13.0, admins: 1, moderators: 5, agents: 12 },
+  { ac: '117 - Kavundampalayam', acNumber: 117, voters: 1956, completion: 14.6, admins: 2, moderators: 6, agents: 15 },
+  { ac: '118 - Coimbatore North', acNumber: 118, voters: 2340, completion: 17.0, admins: 2, moderators: 8, agents: 18 },
+  { ac: '119 - Thondamuthur', acNumber: 119, voters: 1247, completion: 12.5, admins: 1, moderators: 5, agents: 12 },
+  { ac: '120 - Coimbatore South', acNumber: 120, voters: 1890, completion: 14.4, admins: 2, moderators: 6, agents: 15 },
+  { ac: '121 - Singanallur', acNumber: 121, voters: 2145, completion: 18.2, admins: 2, moderators: 7, agents: 17 },
+  { ac: '122 - Kinathukadavu', acNumber: 122, voters: 1678, completion: 13.4, admins: 1, moderators: 5, agents: 13 },
+  { ac: '123 - Pollachi', acNumber: 123, voters: 2378, completion: 17.8, admins: 2, moderators: 8, agents: 18 },
+  { ac: '124 - Valparai (SC)', acNumber: 124, voters: 1234, completion: 11.6, admins: 1, moderators: 4, agents: 10 },
+  { ac: '125 - Udumalaipettai', acNumber: 125, voters: 1945, completion: 15.0, admins: 2, moderators: 6, agents: 15 },
+  { ac: '126 - Madathukulam', acNumber: 126, voters: 1567, completion: 12.4, admins: 1, moderators: 5, agents: 11 },
 ];
 
 const systemGrowthData = [
@@ -71,7 +84,7 @@ export const L0Dashboard = () => {
                 {isLive ? 'Live' : 'Offline'}
               </span>
             </h1>
-            <p className="text-muted-foreground">High-level overview across all 21 Assembly Constituencies</p>
+            <p className="text-muted-foreground">High-level overview across all 26 Assembly Constituencies</p>
           </div>
         </div>
 

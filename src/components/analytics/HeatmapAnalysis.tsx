@@ -11,14 +11,14 @@ interface HeatmapData {
 }
 
 const mockHeatmapData: HeatmapData[] = [
-  { acNumber: 118, name: 'Central District', completion: 12.5, surveys: 1245, category: 'average' },
-  { acNumber: 119, name: 'North Area', completion: 8.2, surveys: 825, category: 'poor' },
-  { acNumber: 120, name: 'South Zone', completion: 18.7, surveys: 1870, category: 'good' },
-  { acNumber: 121, name: 'East Block', completion: 22.3, surveys: 2234, category: 'excellent' },
-  { acNumber: 122, name: 'West Side', completion: 5.1, surveys: 510, category: 'critical' },
-  { acNumber: 123, name: 'Urban Core', completion: 15.4, surveys: 1540, category: 'average' },
-  { acNumber: 124, name: 'Suburbs', completion: 19.8, surveys: 1980, category: 'good' },
-  { acNumber: 125, name: 'Industrial', completion: 7.3, surveys: 730, category: 'poor' },
+  { acNumber: 101, name: 'Dharapuram (SC)', completion: 12.5, surveys: 1245, category: 'average' },
+  { acNumber: 102, name: 'Kangayam', completion: 8.2, surveys: 825, category: 'poor' },
+  { acNumber: 118, name: 'Coimbatore North', completion: 18.7, surveys: 1870, category: 'good' },
+  { acNumber: 119, name: 'Thondamuthur', completion: 22.3, surveys: 2234, category: 'excellent' },
+  { acNumber: 120, name: 'Coimbatore South', completion: 5.1, surveys: 510, category: 'critical' },
+  { acNumber: 121, name: 'Singanallur', completion: 15.4, surveys: 1540, category: 'average' },
+  { acNumber: 123, name: 'Pollachi', completion: 19.8, surveys: 1980, category: 'good' },
+  { acNumber: 125, name: 'Udumalaipettai', completion: 7.3, surveys: 730, category: 'poor' },
 ];
 
 const getCategoryColor = (category: HeatmapData['category']) => {
