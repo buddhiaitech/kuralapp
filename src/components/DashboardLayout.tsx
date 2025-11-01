@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ActivityLogProvider } from '@/contexts/ActivityLogContext';
 import { NotificationCenter } from './NotificationCenter';
+import { ThemeToggle } from './ThemeToggle';
 import {
   LayoutDashboard,
   Users,
@@ -201,7 +202,10 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
                 <SidebarTrigger className="hover:bg-accent rounded-md p-1.5 h-8 w-8 flex items-center justify-center">
                   <Menu className="h-5 w-5" />
                 </SidebarTrigger>
-                <NotificationCenter />
+                <div className="flex items-center gap-2">
+                  <ThemeToggle />
+                  <NotificationCenter />
+                </div>
               </header>
               {/* Main content area */}
               <div className="flex-1 overflow-auto p-4 sm:p-6 lg:p-8">

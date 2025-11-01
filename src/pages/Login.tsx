@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Shield } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
@@ -37,6 +38,9 @@ export const Login = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="absolute top-4 right-4">
+        <ThemeToggle />
+      </div>
       <Card className="w-full max-w-md p-10 shadow-xl">
         <div className="text-center mb-10">
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary shadow-md mb-6">
