@@ -117,22 +117,19 @@ interface ConstituencyCardProps {
 
 const ConstituencyCard = ({ constituency, onClick }: ConstituencyCardProps) => (
   <Card
-    className="p-10 cursor-pointer hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-1 transition-all duration-300 border-2 hover:border-primary/60 group relative overflow-hidden bg-card hover-glow"
+    className="p-10 cursor-pointer hover:shadow-xl transition-all duration-200 border-2 hover:border-primary/50 group bg-card"
     onClick={onClick}
   >
-    {/* Hover gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-8 transition-opacity duration-500" />
     
-    {/* Card content */}
-    <div className="flex items-center space-x-6 relative z-10">
+    <div className="flex items-center space-x-6">
       {/* Icon */}
-      <div className="p-5 rounded-2xl bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-md group-hover:shadow-xl group-hover:scale-110">
+      <div className="p-5 rounded-2xl bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200">
         <MapPin className="h-8 w-8" />
       </div>
       
       {/* Constituency info */}
       <div className="flex-1">
-        <p className="text-4xl font-bold text-primary mb-2 group-hover:scale-105 transition-transform">
+        <p className="text-4xl font-bold text-primary mb-2">
           {constituency.number}
         </p>
         <p className="text-base font-semibold text-foreground/80 group-hover:text-primary transition-colors leading-tight">

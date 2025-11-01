@@ -105,13 +105,11 @@ export default {
         'md': 'var(--shadow-md)',
         'lg': 'var(--shadow-lg)',
         'xl': 'var(--shadow-xl)',
-        'glow': 'var(--shadow-glow)',
       },
       backgroundImage: {
         'gradient-primary': 'var(--gradient-primary)',
         'gradient-success': 'var(--gradient-success)',
         'gradient-warning': 'var(--gradient-warning)',
-        'gradient-aurora': 'var(--gradient-aurora)',
       },
     },
   },

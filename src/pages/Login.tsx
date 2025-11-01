@@ -36,17 +36,11 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-aurora p-4 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0 opacity-20">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-      </div>
-
-      <Card className="w-full max-w-md p-10 shadow-2xl hover-glow relative z-10 backdrop-blur-sm bg-card/95">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <Card className="w-full max-w-md p-10 shadow-xl">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-primary shadow-glow mb-6 hover:scale-110 transition-transform duration-300">
-            <Shield className="h-10 w-10 text-white" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-primary shadow-md mb-6">
+            <Shield className="h-10 w-10 text-primary-foreground" />
           </div>
           <h1 className="text-4xl font-bold mb-3 tracking-tight">Assembly Constituencies</h1>
           <p className="text-lg text-muted-foreground font-medium">Management System</p>

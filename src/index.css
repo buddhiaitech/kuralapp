@@ -52,18 +52,16 @@
 
     --radius: 1rem;
     
-    /* Elegant Shadows */
-    --shadow-sm: 0 2px 8px -2px hsl(250 100% 69% / 0.08);
-    --shadow-md: 0 8px 24px -8px hsl(250 100% 69% / 0.12);
-    --shadow-lg: 0 16px 48px -16px hsl(250 100% 69% / 0.16);
-    --shadow-xl: 0 24px 64px -24px hsl(250 100% 69% / 0.2);
-    --shadow-glow: 0 0 40px hsl(250 100% 75% / 0.3);
+    /* Professional Shadows */
+    --shadow-sm: 0 1px 3px 0 hsl(240 10% 10% / 0.1);
+    --shadow-md: 0 4px 6px -1px hsl(240 10% 10% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(240 10% 10% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(240 10% 10% / 0.1);
     
-    /* Beautiful Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(250 100% 69%), hsl(250 100% 75%));
-    --gradient-success: linear-gradient(135deg, hsl(171 100% 41%), hsl(171 80% 50%));
-    --gradient-warning: linear-gradient(135deg, hsl(0 100% 71%), hsl(15 100% 65%));
-    --gradient-aurora: linear-gradient(135deg, hsl(250 100% 69%), hsl(171 100% 41%), hsl(0 100% 71%));
+    /* Clean Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(250 100% 69%), hsl(250 95% 65%));
+    --gradient-success: linear-gradient(135deg, hsl(171 100% 41%), hsl(171 90% 38%));
+    --gradient-warning: linear-gradient(135deg, hsl(0 100% 71%), hsl(0 95% 68%));
 
     /* Sidebar */
     --sidebar-background: 0 0% 98%;
@@ -117,12 +115,11 @@
     --input: 240 10% 20%;
     --ring: 250 100% 72%;
     
-    /* Dark Mode Shadows with Glow */
-    --shadow-sm: 0 2px 8px -2px hsl(250 100% 72% / 0.12);
-    --shadow-md: 0 8px 24px -8px hsl(250 100% 72% / 0.18);
-    --shadow-lg: 0 16px 48px -16px hsl(250 100% 72% / 0.24);
-    --shadow-xl: 0 24px 64px -24px hsl(250 100% 72% / 0.3);
-    --shadow-glow: 0 0 48px hsl(250 100% 80% / 0.4);
+    /* Professional Dark Shadows */
+    --shadow-sm: 0 1px 3px 0 hsl(0 0% 0% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(0 0% 0% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.3);
+    --shadow-xl: 0 20px 25px -5px hsl(0 0% 0% / 0.3);
 
     /* Sidebar Dark */
     --sidebar-background: 240 10% 10%;
@@ -335,21 +332,8 @@
     min-height: 20px;
   }
 
-  /* Smooth Microinteractions */
+  /* Smooth Interactions */
   .hover-lift {
-    @apply transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-lg;
-  }
-
-  .hover-glow {
-    @apply transition-all duration-300 ease-out hover:shadow-glow;
-  }
-
-  .hover-scale {
-    @apply transition-transform duration-200 ease-out hover:scale-[1.02];
-  }
-
-  /* Gradient Text */
-  .text-gradient {
-    @apply bg-gradient-aurora bg-clip-text text-transparent;
+    @apply transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-lg;
   }
 }
