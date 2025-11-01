@@ -42,36 +42,41 @@ export const ConstituencySelector = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">Assembly Constituencies</h1>
-          <p className="text-muted-foreground">Select a constituency to view detailed information</p>
+      <div className="space-y-10 p-6">
+        <div className="space-y-3">
+          <h1 className="text-5xl font-bold tracking-tight bg-gradient-primary bg-clip-text text-transparent">
+            Assembly Constituencies
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Select a constituency to view detailed information and analytics
+          </p>
         </div>
 
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+        <div className="relative max-w-xl">
+          <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
           <Input
             placeholder="Search by constituency name or number..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-12 h-12 text-base shadow-md border-2 focus:border-primary focus:shadow-lg transition-all"
           />
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {filteredConstituencies.map((ac) => (
             <Card
               key={ac.number}
-              className="p-6 cursor-pointer hover:shadow-lg hover:scale-105 transition-all duration-300 border-2 hover:border-primary group"
+              className="p-8 cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-2 hover:border-primary/50 group relative overflow-hidden bg-card"
               onClick={() => navigate(`/l1/ac/${ac.number}`)}
             >
-              <div className="flex items-center space-x-4">
-                <div className="p-3 rounded-full bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <MapPin className="h-6 w-6" />
+              <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+              <div className="flex items-center space-x-5 relative z-10">
+                <div className="p-4 rounded-xl bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm">
+                  <MapPin className="h-7 w-7" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-2xl font-bold text-primary">{ac.number}</p>
-                  <p className="text-sm font-medium group-hover:text-primary transition-colors">
+                  <p className="text-3xl font-bold text-primary mb-1">{ac.number}</p>
+                  <p className="text-sm font-semibold text-foreground/80 group-hover:text-primary transition-colors leading-tight">
                     {ac.name}
                   </p>
                 </div>
