@@ -9,7 +9,7 @@ export interface ActivityLog {
   timestamp: Date;
   userId: string;
   userName: string;
-  userRole: 'L0' | 'L1' | 'L2';
+  userRole: 'L0' | 'L1' | 'L2' | 'L9';
   action: ActivityAction;
   entityType: EntityType;
   entityId?: string;
@@ -23,7 +23,7 @@ interface ActivityLogContextType {
   activities: ActivityLog[];
   logActivity: (activity: Omit<ActivityLog, 'id' | 'timestamp' | 'userId' | 'userName' | 'userRole'>) => void;
   getActivitiesByUser: (userId: string) => ActivityLog[];
-  getActivitiesByRole: (role: 'L0' | 'L1' | 'L2') => ActivityLog[];
+  getActivitiesByRole: (role: 'L0' | 'L1' | 'L2' | 'L9') => ActivityLog[];
   getRecentActivities: (limit?: number) => ActivityLog[];
   getFilteredActivities: (filters: {
     dateFrom?: Date;
@@ -107,7 +107,7 @@ export const ActivityLogProvider = ({ children }: { children: ReactNode }) => {
     return activities.filter(a => a.userId === userId);
   }, [activities]);
 
-  const getActivitiesByRole = useCallback((role: 'L0' | 'L1' | 'L2') => {
+  const getActivitiesByRole = useCallback((role: 'L0' | 'L1' | 'L2' | 'L9') => {
     return activities.filter(a => a.userRole === role);
   }, [activities]);
 

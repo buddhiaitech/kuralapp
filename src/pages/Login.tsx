@@ -111,6 +111,7 @@ export const Login = () => {
             <p><strong className="text-primary">L0:</strong> admin@system.com / admin123</p>
             <p><strong className="text-secondary">L1:</strong> acim@ac.com / acim123</p>
             <p><strong className="text-accent">L2:</strong> aci@ac118.com / aci123</p>
+            <p><strong className="text-primary">L9 War Room:</strong> warroom@system.com / wrm123</p>
           </div>
         </div>
       </Card>

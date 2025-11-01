@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
-export type UserRole = 'L0' | 'L1' | 'L2';
+export type UserRole = 'L0' | 'L1' | 'L2' | 'L9';
 
 export interface User {
   id: string;
@@ -42,6 +42,13 @@ const MOCK_USERS: Record<string, User & { password: string }> = {
     role: 'L2',
     assignedAC: 118,
     password: 'aci123',
+  },
+  'warroom@system.com': {
+    id: '4',
+    name: 'War Room Commander',
+    email: 'warroom@system.com',
+    role: 'L9',
+    password: 'wrm123',
   },
 };
 

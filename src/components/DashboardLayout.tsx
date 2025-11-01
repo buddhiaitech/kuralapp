@@ -45,6 +45,7 @@ const roleLabels = {
   L0: 'Super Admin',
   L1: 'ACIM Dashboard',
   L2: 'ACI Dashboard',
+  L9: 'War Room Command',
 };
 
 const AppSidebar = () => {
@@ -97,6 +98,10 @@ const AppSidebar = () => {
           { icon: UserCircle, label: 'Booth Agent Management', path: '/l2/booth-agents' },
           { icon: Activity, label: 'Live Booth Updates', path: '/l2/live-updates' },
           { icon: ScrollText, label: 'Activity Logs', path: '/l2/activity-logs' },
+        ];
+      case 'L9':
+        return [
+          { icon: Activity, label: 'War Room', path: '/l9/war-room' },
         ];
       default:
         return [];

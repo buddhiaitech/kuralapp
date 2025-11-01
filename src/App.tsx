@@ -40,6 +40,7 @@ import { LiveBoothUpdates } from "@/pages/l2/LiveBoothUpdates";
 import { Reports } from "@/pages/l2/Reports";
 import { SurveyForms as L2SurveyForms } from "@/pages/l2/SurveyForms";
 import { FormPreview } from "@/pages/shared/FormPreview";
+import { WarRoom } from "@/pages/l9/WarRoom";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -72,6 +73,8 @@ const RoleBasedRedirect = () => {
       return <Navigate to="/l1/constituencies" replace />;
     case 'L2':
       return <Navigate to="/l2/dashboard" replace />;
+    case 'L9':
+      return <Navigate to="/l9/war-room" replace />;
     default:
       return <Navigate to="/login" replace />;
   }
@@ -130,6 +133,9 @@ const AppRoutes = () => {
       <Route path="/l2/live-updates" element={<ProtectedRoute allowedRoles={['L2']}><LiveBoothUpdates /></ProtectedRoute>} />
       <Route path="/l2/reports" element={<ProtectedRoute allowedRoles={['L2']}><Reports /></ProtectedRoute>} />
       <Route path="/l2/activity-logs" element={<ProtectedRoute allowedRoles={['L2']}><L2ActivityLogs /></ProtectedRoute>} />
+      
+      {/* L9 War Room Route */}
+      <Route path="/l9/war-room" element={<ProtectedRoute allowedRoles={['L9']}><WarRoom /></ProtectedRoute>} />
       
       <Route path="*" element={<NotFound />} />
     </Routes>
