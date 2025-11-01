@@ -36,19 +36,25 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent p-4">
-      <Card className="w-full max-w-md p-8 shadow-xl">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-            <Shield className="h-8 w-8 text-primary" />
+    <div className="min-h-screen flex items-center justify-center bg-gradient-aurora p-4 relative overflow-hidden">
+      {/* Animated background elements */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+      </div>
+
+      <Card className="w-full max-w-md p-10 shadow-2xl hover-glow relative z-10 backdrop-blur-sm bg-card/95">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-primary shadow-glow mb-6 hover:scale-110 transition-transform duration-300">
+            <Shield className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold mb-2">Assembly Constituencies</h1>
-          <p className="text-muted-foreground">Management System</p>
+          <h1 className="text-4xl font-bold mb-3 tracking-tight">Assembly Constituencies</h1>
+          <p className="text-lg text-muted-foreground font-medium">Management System</p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email or Mobile Number</Label>
+          <div className="space-y-3">
+            <Label htmlFor="email" className="text-base font-semibold">Email or Mobile Number</Label>
             <Input
               id="email"
               type="text"
@@ -56,11 +62,12 @@ export const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              className="text-base"
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
+          <div className="space-y-3">
+            <Label htmlFor="password" className="text-base font-semibold">Password</Label>
             <Input
               id="password"
               type="password"
@@ -68,31 +75,44 @@ export const Login = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              className="text-base"
             />
           </div>
 
           <div className="flex items-center justify-end">
-            <button type="button" className="text-sm text-primary hover:underline">
+            <button type="button" className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors">
               Recover Password
             </button>
           </div>
 
-          <div className="space-y-3">
-            <Button type="submit" className="w-full bg-secondary hover:bg-secondary/90" disabled={isLoading}>
+          <div className="space-y-4">
+            <Button 
+              type="submit" 
+              variant="secondary" 
+              size="lg" 
+              className="w-full" 
+              disabled={isLoading}
+            >
               {isLoading ? 'Logging in...' : 'Login'}
             </Button>
-            <Button type="button" variant="outline" className="w-full" disabled={isLoading}>
+            <Button 
+              type="button" 
+              variant="outline" 
+              size="lg" 
+              className="w-full" 
+              disabled={isLoading}
+            >
               Login with OTP
             </Button>
           </div>
         </form>
 
-        <div className="mt-8 p-4 bg-muted rounded-lg">
-          <p className="text-xs text-muted-foreground mb-2">Demo Credentials:</p>
-          <div className="text-xs space-y-1">
-            <p><strong>L0:</strong> admin@system.com / admin123</p>
-            <p><strong>L1:</strong> acim@ac.com / acim123</p>
-            <p><strong>L2:</strong> aci@ac118.com / aci123</p>
+        <div className="mt-8 p-6 bg-muted/50 rounded-2xl border-2 border-border">
+          <p className="text-sm font-semibold text-foreground mb-3">Demo Credentials:</p>
+          <div className="text-sm space-y-2 font-medium">
+            <p><strong className="text-primary">L0:</strong> admin@system.com / admin123</p>
+            <p><strong className="text-secondary">L1:</strong> acim@ac.com / acim123</p>
+            <p><strong className="text-accent">L2:</strong> aci@ac118.com / aci123</p>
           </div>
         </div>
       </Card>

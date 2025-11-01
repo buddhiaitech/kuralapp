@@ -36,7 +36,7 @@ export const ConstituencySelector = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-10 p-6">
+      <div className="space-y-12 p-8">
         {/* Page Header */}
         <PageHeader />
 
@@ -57,11 +57,11 @@ export const ConstituencySelector = () => {
  * Page header with title and description
  */
 const PageHeader = () => (
-  <div className="space-y-3">
-    <h1 className="text-5xl font-bold tracking-tight bg-gradient-primary bg-clip-text text-transparent">
+  <div className="space-y-4">
+    <h1 className="text-6xl font-bold tracking-tight bg-gradient-primary bg-clip-text text-transparent">
       Assembly Constituencies
     </h1>
-    <p className="text-lg text-muted-foreground">
+    <p className="text-xl text-muted-foreground font-medium">
       Select a constituency to view detailed information and analytics
     </p>
   </div>
@@ -76,13 +76,13 @@ interface SearchBarProps {
 }
 
 const SearchBar = ({ value, onChange }: SearchBarProps) => (
-  <div className="relative max-w-xl">
-    <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+  <div className="relative max-w-2xl">
+    <Search className="absolute left-5 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
     <Input
       placeholder="Search by constituency name or number..."
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="pl-12 h-12 text-base shadow-md border-2 focus:border-primary focus:shadow-lg transition-all"
+      className="pl-14 h-14 text-base shadow-lg border-2 focus:border-primary focus:shadow-xl transition-all rounded-2xl"
     />
   </div>
 );
@@ -96,7 +96,7 @@ interface ConstituencyGridProps {
 }
 
 const ConstituencyGrid = ({ constituencies, onSelect }: ConstituencyGridProps) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
     {constituencies.map((ac) => (
       <ConstituencyCard 
         key={ac.number}
@@ -117,25 +117,25 @@ interface ConstituencyCardProps {
 
 const ConstituencyCard = ({ constituency, onClick }: ConstituencyCardProps) => (
   <Card
-    className="p-8 cursor-pointer hover:shadow-xl hover:scale-[1.02] transition-all duration-300 border-2 hover:border-primary/50 group relative overflow-hidden bg-card"
+    className="p-10 cursor-pointer hover:shadow-2xl hover:scale-[1.03] hover:-translate-y-1 transition-all duration-300 border-2 hover:border-primary/60 group relative overflow-hidden bg-card hover-glow"
     onClick={onClick}
   >
     {/* Hover gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 transition-opacity duration-300" />
+    <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-8 transition-opacity duration-500" />
     
     {/* Card content */}
-    <div className="flex items-center space-x-5 relative z-10">
+    <div className="flex items-center space-x-6 relative z-10">
       {/* Icon */}
-      <div className="p-4 rounded-xl bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-sm">
-        <MapPin className="h-7 w-7" />
+      <div className="p-5 rounded-2xl bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-300 shadow-md group-hover:shadow-xl group-hover:scale-110">
+        <MapPin className="h-8 w-8" />
       </div>
       
       {/* Constituency info */}
       <div className="flex-1">
-        <p className="text-3xl font-bold text-primary mb-1">
+        <p className="text-4xl font-bold text-primary mb-2 group-hover:scale-105 transition-transform">
           {constituency.number}
         </p>
-        <p className="text-sm font-semibold text-foreground/80 group-hover:text-primary transition-colors leading-tight">
+        <p className="text-base font-semibold text-foreground/80 group-hover:text-primary transition-colors leading-tight">
           {constituency.name}
         </p>
       </div>
