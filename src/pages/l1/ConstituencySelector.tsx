@@ -96,7 +96,7 @@ interface ConstituencyGridProps {
 }
 
 const ConstituencyGrid = ({ constituencies, onSelect }: ConstituencyGridProps) => (
-  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
     {constituencies.map((ac) => (
       <ConstituencyCard 
         key={ac.number}
@@ -117,22 +117,21 @@ interface ConstituencyCardProps {
 
 const ConstituencyCard = ({ constituency, onClick }: ConstituencyCardProps) => (
   <Card
-    className="p-10 cursor-pointer hover:shadow-xl transition-all duration-200 border-2 hover:border-primary/50 group bg-card"
+    className="p-5 cursor-pointer hover:shadow-xl transition-all duration-200 border-2 hover:border-primary/50 group bg-card"
     onClick={onClick}
   >
-    
-    <div className="flex items-center space-x-6">
+    <div className="flex items-center gap-4">
       {/* Icon */}
-      <div className="p-5 rounded-2xl bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200">
-        <MapPin className="h-8 w-8" />
+      <div className="p-3 rounded-xl bg-primary/10 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200 flex-shrink-0">
+        <MapPin className="h-5 w-5" />
       </div>
       
       {/* Constituency info */}
-      <div className="flex-1">
-        <p className="text-4xl font-bold text-primary mb-2">
-          {constituency.number}
+      <div className="flex-1 min-w-0">
+        <p className="text-xl font-bold text-primary mb-1">
+          AC {constituency.number}
         </p>
-        <p className="text-base font-semibold text-foreground/80 group-hover:text-primary transition-colors leading-tight">
+        <p className="text-sm font-semibold text-foreground/80 group-hover:text-primary transition-colors leading-tight line-clamp-2">
           {constituency.name}
         </p>
       </div>
