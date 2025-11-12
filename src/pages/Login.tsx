@@ -21,13 +21,13 @@ export const Login = () => {
     setIsLoading(true);
 
     try {
-      const success = await login(email, password);
-      if (success) {
+      const result = await login(email, password);
+      if (result.success) {
         toast.success('Login successful!');
         // Navigation will be handled by the router based on role
         navigate('/dashboard');
       } else {
-        toast.error('Invalid credentials. Please try again.');
+        toast.error(result.message ?? 'Invalid credentials. Please try again.');
       }
     } catch (error) {
       toast.error('An error occurred. Please try again.');

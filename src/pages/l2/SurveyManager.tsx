@@ -4,39 +4,71 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import { FileCheck, Filter, Eye } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { SurveyDetailDrawer } from '@/components/SurveyDetailDrawer';
+import { useToast } from '@/components/ui/use-toast';
+import { fetchSurveys } from '@/lib/surveys';
 
 const mockSurveys = [
-  { id: 1, voter: 'Rajesh Kumar', voterId: 'TND1234567', booth: 'Booth 1', question: 'Which party will you vote for?', answer: 'Party A', date: '2024-03-15', agent: 'Rajesh Kumar' },
-  { id: 2, voter: 'Priya Sharma', voterId: 'TND1234568', booth: 'Booth 1', question: 'What is your primary concern?', answer: 'Healthcare', date: '2024-03-15', agent: 'Rajesh Kumar' },
-  { id: 3, voter: 'Suresh Babu', voterId: 'TND1234571', booth: 'Booth 3', question: 'Rate government performance', answer: '7/10', date: '2024-03-14', agent: 'Priya Sharma' },
-  { id: 4, voter: 'Arun Patel', voterId: 'TND1234569', booth: 'Booth 2', question: 'Which party will you vote for?', answer: 'Party B', date: '2024-03-14', agent: 'Arun Patel' },
+  { id: 1, formName: 'Voter Intake Form 2025', voter: 'Rajesh Kumar', voterId: 'TND1234567', booth: 'Booth 1', question: 'Which party will you vote for?', answer: 'Party A', date: '2024-03-15', agent: 'Rajesh Kumar' },
+  { id: 2, formName: 'Local Issues Survey', voter: 'Priya Sharma', voterId: 'TND1234568', booth: 'Booth 1', question: 'What is your primary concern?', answer: 'Healthcare', date: '2024-03-15', agent: 'Rajesh Kumar' },
+  { id: 3, formName: 'Local Issues Survey', voter: 'Suresh Babu', voterId: 'TND1234571', booth: 'Booth 3', question: 'Rate government performance', answer: '7/10', date: '2024-03-14', agent: 'Priya Sharma' },
+  { id: 4, formName: 'Voter Intake Form 2025', voter: 'Arun Patel', voterId: 'TND1234569', booth: 'Booth 2', question: 'Which party will you vote for?', answer: 'Party B', date: '2024-03-14', agent: 'Arun Patel' },
 ];
 
 export const SurveyManager = () => {
   const { user } = useAuth();
   const acNumber = user?.assignedAC || 118;
+  const { toast } = useToast();
   const [selectedSurvey, setSelectedSurvey] = useState<any>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [formFilter, setFormFilter] = useState<string>('all');
   const [boothFilter, setBoothFilter] = useState<string>('all');
+  const [assignedForms, setAssignedForms] = useState<Array<{ id: string; name: string }>>([]);
+  const [isLoadingForms, setIsLoadingForms] = useState(false);
 
-  // Mock assigned forms (these would come from L1 assignments)
-  const assignedForms = [
-    { id: 1, name: 'Voter Intake Form 2025' },
-    { id: 2, name: 'Local Issues Survey' },
-  ];
+  useEffect(() => {
+    const loadAssignedForms = async () => {
+      setIsLoadingForms(true);
+      try {
+        const surveys = await fetchSurveys({ assignedAC: acNumber });
+        setAssignedForms(
+          surveys
+            .filter((survey) => survey.status === 'Active')
+            .map((survey) => ({
+              id: survey.id,
+              name: survey.title,
+            })),
+        );
+      } catch (error) {
+        console.error('Failed to load assigned survey forms', error);
+        toast({
+          title: 'Unable to load survey forms',
+          description: error instanceof Error ? error.message : 'Please try again later.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoadingForms(false);
+      }
+    };
+
+    loadAssignedForms();
+  }, [acNumber, toast]);
 
   // Get unique booths for filter options
   const uniqueBooths = Array.from(new Set(mockSurveys.map(survey => survey.booth)));
 
   // Filter surveys based on selected filters
-  const filteredSurveys = mockSurveys.filter(survey => {
-    // Form filter (simplified for mock data)
-    const matchesForm = formFilter === 'all' || 
-      (formFilter === '1' && survey.question.includes('party')) ||
-      (formFilter === '2' && survey.question.includes('concern'));
+  const activeFormNames = new Set(assignedForms.map((form) => form.name));
+
+  const filteredSurveys = mockSurveys.filter((survey) => {
+    const selectedForm = assignedForms.find((form) => form.id === formFilter);
+    const matchesForm =
+      formFilter === 'all'
+        ? activeFormNames.size > 0 && activeFormNames.has(survey.formName)
+        : selectedForm
+          ? survey.formName === selectedForm.name
+          : false;
     
     // Booth filter
     const matchesBooth = boothFilter === 'all' || survey.booth === boothFilter;
@@ -65,11 +97,21 @@ export const SurveyManager = () => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Survey Forms</SelectItem>
-                {assignedForms.map((form) => (
-                  <SelectItem key={form.id} value={form.id.toString()}>
-                    {form.name}
+                {isLoadingForms ? (
+                  <SelectItem value="loading" disabled>
+                    Loading forms...
                   </SelectItem>
-                ))}
+                ) : assignedForms.length > 0 ? (
+                  assignedForms.map((form) => (
+                    <SelectItem key={form.id} value={form.id}>
+                      {form.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="none" disabled>
+                    No active forms assigned
+                  </SelectItem>
+                )}
               </SelectContent>
             </Select>
             <Select value={boothFilter} onValueChange={setBoothFilter}>

@@ -8,9 +8,10 @@ import { Input } from '@/components/ui/input';
 import { Search, Trash2, Plus } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
+import { fetchSurveys } from '@/lib/surveys';
 
-interface Form {
-  id: number;
+interface FormOption {
+  id: string;
   name: string;
 }
 
@@ -21,18 +22,13 @@ interface AC {
 }
 
 interface Assignment {
-  id: number;
+  id: string;
+  formId: string;
   formName: string;
   acNumber: number;
   acName: string;
   dateAssigned: string;
 }
-
-const mockForms: Form[] = [
-  { id: 1, name: 'Voter Intake Form 2025' },
-  { id: 2, name: 'Local Issues Survey' },
-  { id: 3, name: 'Post-Election Feedback' },
-];
 
 const mockACs: AC[] = Array.from({ length: 21 }, (_, i) => ({
   id: i + 1,
@@ -40,12 +36,7 @@ const mockACs: AC[] = Array.from({ length: 21 }, (_, i) => ({
   name: i === 18 ? 'Thondamuthur' : `AC ${100 + i}`
 }));
 
-const initialAssignments: Assignment[] = [
-  { id: 1, formName: 'Voter Intake Form 2025', acNumber: 118, acName: 'Thondamuthur', dateAssigned: '2024-03-15' },
-  { id: 2, formName: 'Local Issues Survey', acNumber: 118, acName: 'Thondamuthur', dateAssigned: '2024-03-14' },
-  { id: 3, formName: 'Voter Intake Form 2025', acNumber: 101, acName: 'AC 101', dateAssigned: '2024-03-13' },
-  { id: 4, formName: 'Post-Election Feedback', acNumber: 105, acName: 'AC 105', dateAssigned: '2024-03-12' },
-];
+const initialAssignments: Assignment[] = [];
 
 export const SurveyAssignments = () => {
   const { toast } = useToast();
@@ -55,61 +46,105 @@ export const SurveyAssignments = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [formFilter, setFormFilter] = useState<string>('all');
   const [acFilter, setAcFilter] = useState<string>('all');
+  const [forms, setForms] = useState<FormOption[]>([]);
+  const [isLoadingForms, setIsLoadingForms] = useState(false);
+
+  useEffect(() => {
+    const loadForms = async () => {
+      setIsLoadingForms(true);
+      try {
+        const surveys = await fetchSurveys();
+        setForms(
+          surveys
+            .filter((survey) => survey.status === 'Active')
+            .map((survey) => ({
+              id: survey.id,
+              name: survey.title,
+            })),
+        );
+      } catch (error) {
+        console.error('Failed to load survey forms', error);
+        toast({
+          title: 'Unable to load forms',
+          description: error instanceof Error ? error.message : 'Please try again later.',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoadingForms(false);
+      }
+    };
+
+    loadForms();
+  }, [toast]);
 
   // Filter assignments based on search term, form filter, and AC filter
+  const activeFormIds = new Set(forms.map((form) => form.id));
+
   const filteredAssignments = assignments.filter(assignment => {
+    if (!activeFormIds.has(assignment.formId)) {
+      return false;
+    }
     const matchesSearch = assignment.formName.toLowerCase().includes(searchTerm.toLowerCase()) || 
                          assignment.acName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          assignment.acNumber.toString().includes(searchTerm);
     
-    const matchesForm = formFilter === 'all' || assignment.formName === mockForms.find(f => f.id === parseInt(formFilter))?.name;
-    const matchesAC = acFilter === 'all' || assignment.acNumber === parseInt(acFilter);
+    const matchesForm = formFilter === 'all' || assignment.formId === formFilter;
+    const matchesAC = acFilter === 'all' || assignment.acNumber === Number(acFilter);
     
     return matchesSearch && matchesForm && matchesAC;
   });
 
   const handleAssign = () => {
-    if (selectedForm && selectedAC) {
-      const form = mockForms.find(f => f.id.toString() === selectedForm);
-      const ac = mockACs.find(a => a.id.toString() === selectedAC);
-      
-      if (form && ac) {
-        // Check if assignment already exists
-        const existingAssignment = assignments.find(
-          a => a.formName === form.name && a.acNumber === ac.number
-        );
-        
-        if (existingAssignment) {
-          toast({
-            title: 'Assignment Already Exists',
-            description: `"${form.name}" is already assigned to AC ${ac.number} - ${ac.name}`,
-            variant: 'destructive'
-          });
-          return;
-        }
-        
-        const newAssignment: Assignment = {
-          id: Math.max(0, ...assignments.map(a => a.id)) + 1,
-          formName: form.name,
-          acNumber: ac.number,
-          acName: ac.name,
-          dateAssigned: new Date().toISOString().split('T')[0],
-        };
-        
-        setAssignments([...assignments, newAssignment]);
-        setSelectedForm('');
-        setSelectedAC('');
-        
-        toast({
-          title: 'Assignment Created',
-          description: `"${form.name}" has been assigned to AC ${ac.number} - ${ac.name}`
-        });
-      }
+    if (!selectedForm || !selectedAC) {
+      return;
     }
+
+    const form = forms.find((f) => f.id === selectedForm);
+    const ac = mockACs.find((a) => a.id.toString() === selectedAC);
+
+    if (!form || !ac) {
+      toast({
+        title: 'Selection Required',
+        description: 'Please select a valid form and assembly constituency.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const existingAssignment = assignments.find(
+      (assignment) => assignment.formId === form.id && assignment.acNumber === ac.number,
+    );
+
+    if (existingAssignment) {
+      toast({
+        title: 'Assignment Already Exists',
+        description: `"${form.name}" is already assigned to AC ${ac.number} - ${ac.name}`,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const newAssignment: Assignment = {
+      id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+      formId: form.id,
+      formName: form.name,
+      acNumber: ac.number,
+      acName: ac.name,
+      dateAssigned: new Date().toISOString().split('T')[0],
+    };
+
+    setAssignments((prev) => [...prev, newAssignment]);
+    setSelectedForm('');
+    setSelectedAC('');
+
+    toast({
+      title: 'Assignment Created',
+      description: `"${form.name}" has been assigned to AC ${ac.number} - ${ac.name}`,
+    });
   };
 
-  const handleDeleteAssignment = (id: number, formName: string, acNumber: number, acName: string) => {
-    setAssignments(assignments.filter(assignment => assignment.id !== id));
+  const handleDeleteAssignment = (id: string, formName: string, acNumber: number, acName: string) => {
+    setAssignments((prev) => prev.filter((assignment) => assignment.id !== id));
     toast({
       title: 'Assignment Removed',
       description: `"${formName}" assignment to AC ${acNumber} - ${acName} has been removed`
@@ -134,11 +169,21 @@ export const SurveyAssignments = () => {
                   <SelectValue placeholder="Choose a form" />
                 </SelectTrigger>
                 <SelectContent>
-                  {mockForms.map((form) => (
-                    <SelectItem key={form.id} value={form.id.toString()}>
-                      {form.name}
+                  {isLoadingForms ? (
+                    <SelectItem value="loading" disabled>
+                      Loading forms...
                     </SelectItem>
-                  ))}
+                  ) : forms.length > 0 ? (
+                    forms.map((form) => (
+                      <SelectItem key={form.id} value={form.id}>
+                        {form.name}
+                      </SelectItem>
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>
+                      No active forms available
+                    </SelectItem>
+                  )}
                 </SelectContent>
               </Select>
             </div>
@@ -163,7 +208,7 @@ export const SurveyAssignments = () => {
               <Button 
                 className="w-full" 
                 onClick={handleAssign}
-                disabled={!selectedForm || !selectedAC}
+                disabled={!selectedForm || !selectedAC || isLoadingForms || forms.length === 0}
               >
                 <Plus className="mr-2 h-4 w-4" />
                 Assign Form
@@ -192,11 +237,21 @@ export const SurveyAssignments = () => {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Forms</SelectItem>
-                    {mockForms.map((form) => (
-                      <SelectItem key={form.id} value={form.id.toString()}>
+                  {isLoadingForms ? (
+                    <SelectItem value="loading" disabled>
+                      Loading forms...
+                    </SelectItem>
+                  ) : forms.length > 0 ? (
+                    forms.map((form) => (
+                      <SelectItem key={form.id} value={form.id}>
                         {form.name}
                       </SelectItem>
-                    ))}
+                    ))
+                  ) : (
+                    <SelectItem value="none" disabled>
+                      No active forms available
+                    </SelectItem>
+                  )}
                   </SelectContent>
                 </Select>
                 <Select value={acFilter} onValueChange={setAcFilter}>
