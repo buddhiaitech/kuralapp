@@ -6,7 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Eye, ArrowLeft } from 'lucide-react';
-import { fetchSurvey, Survey } from '@/lib/surveys';
 
 interface Question {
   id: string;
@@ -16,11 +15,20 @@ interface Question {
   options?: string[];
 }
 
+interface FormData {
+  id: number | string;
+  title: string;
+  description: string;
+  questions: Question[];
+  assignedACs?: number[];
+  createdAt?: string;
+}
+
 export const FormPreview = () => {
   const { formId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [formData, setFormData] = useState<Survey | null>(null);
+  const [formData, setFormData] = useState<FormData | null>(null);
   const [loading, setLoading] = useState(true);
 
   const isL0 = user?.role === 'L0';
@@ -33,21 +41,27 @@ export const FormPreview = () => {
       return;
     }
 
-    const loadSurvey = async () => {
-      setLoading(true);
+    // Get form data from localStorage
+    const storageKey = isL0 
+      ? 'surveyFormsData' 
+      : isL1 
+        ? 'surveyFormsDataL1' 
+        : 'surveyFormsDataL2';
+    
+    const storedForms = localStorage.getItem(storageKey);
+    if (storedForms) {
       try {
-        const survey = await fetchSurvey(formId);
-        setFormData(survey);
-      } catch (error) {
-        console.error('Failed to load survey preview', error);
-        setFormData(null);
-      } finally {
-        setLoading(false);
+        const forms = JSON.parse(storedForms);
+        const form = forms.find((f: any) => 
+          f.id.toString() === formId.toString()
+        );
+        setFormData(form || null);
+      } catch (e) {
+        console.error('Error parsing form data:', e);
       }
-    };
-
-    loadSurvey();
-  }, [formId]);
+    }
+    setLoading(false);
+  }, [formId, isL0, isL1, isL2]);
 
   const handleBack = () => {
     if (isL0) {

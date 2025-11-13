@@ -5,89 +5,90 @@ import { Plus, Edit2, Trash2, FileText, Eye } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { useToast } from '@/components/ui/use-toast';
-import { Switch } from '@/components/ui/switch';
-import { fetchSurveys, deleteSurvey, Survey, updateSurveyStatus } from '@/lib/surveys';
+
+interface SurveyForm {
+  id: number;
+  name: string;
+  questions: number;
+  status: 'Active' | 'Draft';
+  created: string;
+}
+
+const initialForms: SurveyForm[] = [
+  { id: 1, name: 'Voter Intake Form 2025', questions: 4, status: 'Active', created: '2024-01-15' },
+  { id: 2, name: 'Local Issues Survey', questions: 3, status: 'Active', created: '2024-02-01' },
+  { id: 3, name: 'Post-Election Feedback', questions: 2, status: 'Draft', created: '2024-03-10' },
+];
+
+// In a real app, this would be stored in a proper state management solution
+const getStoredForms = (): SurveyForm[] => {
+  const stored = localStorage.getItem('surveyForms');
+  return stored ? JSON.parse(stored) : initialForms;
+};
+
+const storeForms = (forms: SurveyForm[]) => {
+  localStorage.setItem('surveyForms', JSON.stringify(forms));
+};
+
+// Get form data for editing
+const getFormData = (formId: number) => {
+  const stored = localStorage.getItem('surveyFormsData');
+  if (!stored) return null;
+  
+  try {
+    const forms = JSON.parse(stored);
+    return forms.find((form: any) => form.id === formId);
+  } catch (e) {
+    return null;
+  }
+};
 
 export const SurveyBank = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [forms, setForms] = useState<Survey[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [updatingStatusId, setUpdatingStatusId] = useState<string | null>(null);
+  const [forms, setForms] = useState<SurveyForm[]>(getStoredForms());
 
   useEffect(() => {
-    const loadSurveys = async () => {
-      setIsLoading(true);
-      try {
-        const data = await fetchSurveys({ role: 'L0' });
-        setForms(data);
-      } catch (error) {
-        console.error('Failed to load surveys', error);
-        toast({
-          title: 'Unable to load surveys',
-          description: error instanceof Error ? error.message : 'Please try again later.',
-          variant: 'destructive',
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadSurveys();
-  }, [toast]);
+    // Update localStorage whenever forms change
+    storeForms(forms);
+  }, [forms]);
 
   const handleCreateNewForm = () => {
     navigate('/l0/surveys/builder/new');
   };
 
-  const handleEditForm = (formId: string) => {
+  const handleEditForm = (formId: number) => {
+    // Store form data in localStorage for the builder to access
+    const formData = getFormData(formId);
+    if (formData) {
+      localStorage.setItem('currentEditingForm', JSON.stringify(formData));
+    }
     navigate(`/l0/surveys/builder/${formId}`);
   };
 
-  const handleViewForm = (formId: string) => {
+  const handleViewForm = (formId: number) => {
     navigate(`/l0/surveys/preview/${formId}`);
   };
 
-  const handleDeleteForm = async (formId: string, formName: string) => {
-    try {
-      await deleteSurvey(formId);
-      setForms((prev) => prev.filter((form) => form.id !== formId));
-      toast({
-        title: 'Form Deleted',
-        description: `"${formName}" has been deleted successfully.`,
-      });
-    } catch (error) {
-      console.error('Failed to delete survey', error);
-      toast({
-        title: 'Delete failed',
-        description: error instanceof Error ? error.message : 'Please try again later.',
-        variant: 'destructive',
-      });
+  const handleDeleteForm = (formId: number, formName: string) => {
+    setForms(forms.filter(form => form.id !== formId));
+    
+    // Also remove form data
+    const storedData = localStorage.getItem('surveyFormsData');
+    if (storedData) {
+      try {
+        const formsData = JSON.parse(storedData);
+        const updatedData = formsData.filter((form: any) => form.id !== formId);
+        localStorage.setItem('surveyFormsData', JSON.stringify(updatedData));
+      } catch (e) {
+        console.error('Error removing form data:', e);
+      }
     }
-  };
-
-  const handleStatusToggle = async (form: Survey, checked: boolean) => {
-    const nextStatus = checked ? 'Active' : 'Draft';
-    setUpdatingStatusId(form.id);
-    try {
-      const updated = await updateSurveyStatus(form.id, nextStatus);
-      setForms((prev) =>
-        prev.map((item) => (item.id === updated.id ? { ...item, status: updated.status } : item)),
-      );
-      toast({
-        title: 'Status Updated',
-        description: `"${updated.title}" is now ${updated.status}.`,
-      });
-    } catch (error) {
-      console.error('Failed to update survey status', error);
-      toast({
-        title: 'Unable to update status',
-        description: error instanceof Error ? error.message : 'Please try again later.',
-        variant: 'destructive',
-      });
-    } finally {
-      setUpdatingStatusId(null);
-    }
+    
+    toast({
+      title: 'Form Deleted',
+      description: `"${formName}" has been deleted successfully.`
+    });
   };
 
   return (
@@ -117,70 +118,50 @@ export const SurveyBank = () => {
                 </tr>
               </thead>
               <tbody className="divide-y">
-                {isLoading ? (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
-                      Loading surveys...
+                {forms.map((form) => (
+                  <tr key={form.id} className="hover:bg-muted/50">
+                    <td className="px-4 py-3 text-sm font-medium">
+                      <div className="flex items-center space-x-2">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span>{form.name}</span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-sm">{form.questions} questions</td>
+                    <td className="px-4 py-3 text-sm">{form.created}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        form.status === 'Active' ? 'bg-success/10 text-success' : 'bg-warning/10 text-warning'
+                      }`}>
+                        {form.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex space-x-2">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleEditForm(form.id)}
+                        >
+                          <Edit2 className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleViewForm(form.id)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => handleDeleteForm(form.id, form.name)}
+                        >
+                          <Trash2 className="h-4 w-4 text-destructive" />
+                        </Button>
+                      </div>
                     </td>
                   </tr>
-                ) : forms.length > 0 ? (
-                  forms.map((form) => (
-                    <tr key={form.id} className="hover:bg-muted/50">
-                      <td className="px-4 py-3 text-sm font-medium">
-                        <div className="flex items-center space-x-2">
-                          <FileText className="h-4 w-4 text-primary" />
-                          <span>{form.title}</span>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3 text-sm">{form.questions.length} questions</td>
-                      <td className="px-4 py-3 text-sm">
-                        {form.createdAt ? new Date(form.createdAt).toLocaleDateString() : '—'}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center space-x-3">
-                          <span
-                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                              form.status === 'Active'
-                                ? 'bg-success/10 text-success'
-                                : 'bg-warning/10 text-warning'
-                            }`}
-                          >
-                            {form.status}
-                          </span>
-                          <Switch
-                            checked={form.status === 'Active'}
-                            onCheckedChange={(checked) => handleStatusToggle(form, Boolean(checked))}
-                            disabled={updatingStatusId === form.id}
-                            aria-label={`Toggle status for ${form.title}`}
-                          />
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex space-x-2">
-                          <Button variant="ghost" size="sm" onClick={() => handleEditForm(form.id)}>
-                            <Edit2 className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="sm" onClick={() => handleViewForm(form.id)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleDeleteForm(form.id, form.title)}
-                          >
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={5} className="px-4 py-6 text-center text-muted-foreground">
-                      No surveys found. Create your first form to get started.
-                    </td>
-                  </tr>
-                )}
+                ))}
               </tbody>
             </table>
           </div>
